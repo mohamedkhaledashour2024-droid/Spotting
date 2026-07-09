@@ -368,88 +368,19 @@
     <!-- طبقة التظليل الخلفية عند فتح القائمة -->
     <div class="overlay" id="overlay"></div>
 
-    <!-- كود الـ JavaScript للتحكم بالفتح والإغلاق -->
-    <script>
-        const menuBtn = document.getElementById('menuBtn');
-        const sidebar = document.getElementById('sidebar');
-        const closeBtn = document.getElementById('closeBtn');
-        const overlay = document.getElementById('overlay');
-
-        // فتح القائمة عند الضغط على زر الهامبرغر
-        menuBtn.addEventListener('click', () => {
-            sidebar.classList.add('open');
-            overlay.classList.add('show');
-        });
-
-        // إغلاق القائمة عند الضغط على زر X
-        closeBtn.addEventListener('click', () => {
-            sidebar.classList.remove('open');
-            overlay.classList.remove('show');
-        });
-
-        // إغلاق القائمة عند الضغط في أي مكان خارجها (على التظليل)
-        overlay.addEventListener('click', () => {
-            sidebar.classList.remove('open');
-            overlay.classList.remove('show');
-        });
-             // تعريف العناصر البرمجية الجديدة للمنتج والمودال
-        const productCard = document.getElementById('productCard');
-        const productModal = document.getElementById('productModal');
-        const closeModalBtn = document.getElementById('closeModalBtn');
-
-        // فتح المربع الأكبر للمنتج عند الضغط على كارت المنتج
-        productCard.addEventListener('click', () => {
-            productModal.classList.add('open');
-            overlay.classList.add('show');
-        });
-
-        // إغلاق المربع الأكبر عند الضغط على زر X
-        closeModalBtn.addEventListener('click', () => {
-            productModal.classList.remove('open');
-            overlay.classList.remove('show');
-        });
-
-        // تعديل كود الـ overlay الحالي ليتكفل بإغلاق المودال أيضاً عند الضغط في الخلفية
-        
-                 overlay.addEventListener('click', () => {
-            sidebar.classList.remove('open');
-            productModal.classList.remove('open');
-            productModal2.classList.remove('open');
-            overlay.classList.remove('show');
-        });
-     
-             // تعريف عناصر المنتج الثاني الجديد
-        const productCard2 = document.getElementById('productCard2');
-        const productModal2 = document.getElementById('productModal2');
-        const closeModalBtn2 = document.getElementById('closeModalBtn2');
-
-        // أمر فتح المودال الثاني عند الضغط على الكارت الثاني
-        productCard2.addEventListener('click', () => {
-            productModal2.classList.add('open');
-            overlay.classList.add('show');
-        });
-
-        // أمر إغلاق المودال الثاني عند الضغط على زر X الخاص به
-        closeModalBtn2.addEventListener('click', () => {
-            productModal2.classList.remove('open');
-            overlay.classList.remove('show');
-        });
-     
-    </script>
-    <!-- محتوى الصفحة الرئيسي (مربع المنتج) -->
+       <!-- محتوى الصفحة الرئيسي (مربع المنتج الأول) -->
     <div class="container">
-        <div class="product-card" id="productCard2">
+        <div class="product-card" id="productCard">
             <img src="IMG_20260621_083902.jpg" alt="تيشرت سبوتينج">
             <h3>تيشرت سبوتينج القطني</h3>
             <p>خامة ممتازة ومريحة جداً ملائمة لجميع الأوقات.</p>
         </div>
     </div>
 
-    <!-- المربع الأكبر للمنتج (Modal) -->
-    <div class="product-modal" id="productModal2">
-        <button class="close-modal-btn" id="closeModalBtn2">&times;</button>
+    <!-- المربع الأكبر للمنتج الأول (Modal) -->
+    <div class="product-modal" id="productModal">
+        <button class="close-modal-btn" id="closeModalBtn">&times;</button>
         <div class="modal-body">
-            <!-- القسم الأيمن: تفاصيل وأزرار الشراء -->
             <div class="modal-right">
                 <div>
                     <h4>تفاصيل أكثر</h4>
@@ -461,12 +392,122 @@
                     <button class="btn-cart">إضافة للعربة</button>
                 </div>
             </div>
-            <!-- القسم الأيسر: الصورة -->
             <div class="modal-left">
                 <img src="IMG_20260621_083902.jpg" alt="تيشرت سبوتينج">
             </div>
         </div>
     </div>
- 
+
+    <!-- محتوى الصفحة الرئيسي (مربع المنتج الثاني) -->
+    <div class="container">
+        <div class="product-card" id="productCard2">
+            <img src="IMG_20260621_083902.jpg" alt="تيشرت سبوتينج">
+            <h3>تيشرت سبوتينج القطني</h3>
+            <p>خامة ممتازة ومريحة جداً ملائمة لجميع الأوقات.</p>
+        </div>
+    </div>
+
+    <!-- المربع الأكبر للمنتج الثاني (Modal 2) -->
+    <div class="product-modal" id="productModal2">
+        <button class="close-modal-btn" id="closeModalBtn2">&times;</button>
+        <div class="modal-body">
+            <div class="modal-right">
+                <div>
+                    <h4>تفاصيل أكثر</h4>
+                    <h2>تيشرت سبوتينج القطني</h2>
+                    <p>هذا الاصدار الحصري من تيشرت سبوتينج مصنوع من القطن الطبيعي 100%، بياقة دائرية مريحة وتصميم عصري يناسب الاستخدام اليومي. متوفر بجميع المقاسات.</p>
+                </div>
+                <div class="modal-buttons">
+                    <button class="btn-buy">شراء</button>
+                    <button class="btn-cart">إضافة للعربة</button>
+                </div>
+            </div>
+            <div class="modal-left">
+                <img src="IMG_20260621_083902.jpg" alt="تيشرت سبوتينج">
+            </div>
+        </div>
+    </div>
+
+    <!-- القائمة الجانبية المنسدلة من اليمين -->
+    <div class="sidebar" id="sidebar">
+        <button class="close-btn" id="closeBtn">&times;</button>
+        <div class="sidebar-content">
+            <div class="under-construction">⚠️ تحت الإنشاء</div>
+        </div>
+    </div>
+
+    <!-- طبقة التظليل الخلفية عند فتح القائمة -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- كود الـ JavaScript للتحكم بالفتح والإغلاق (في النهاية تماماً لضمان التشغيل) -->
+    <script>
+        const menuBtn = document.getElementById('menuBtn');
+        const sidebar = document.getElementById('sidebar');
+        const closeBtn = document.getElementById('closeBtn');
+        const overlay = document.getElementById('overlay');
+
+        // كروت المنتجات والمودالات
+        const productCard = document.getElementById('productCard');
+        const productModal = document.getElementById('productModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+
+        const productCard2 = document.getElementById('productCard2');
+        const productModal2 = document.getElementById('productModal2');
+        const closeModalBtn2 = document.getElementById('closeModalBtn2');
+
+        // فتح القائمة عند الضغط على زر الهامبرغر
+        if(menuBtn) {
+            menuBtn.addEventListener('click', () => {
+                sidebar.classList.add('open');
+                overlay.classList.add('show');
+            });
+        }
+
+        // إغلاق القائمة عند الضغط على زر X
+        if(closeBtn) {
+            closeBtn.addEventListener('click', () => {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('show');
+            });
+        }
+
+        // فتح وإغلاق المنتج الأول
+        if(productCard) {
+            productCard.addEventListener('click', () => {
+                productModal.classList.add('open');
+                overlay.classList.add('show');
+            });
+        }
+        if(closeModalBtn) {
+            closeModalBtn.addEventListener('click', () => {
+                productModal.classList.remove('open');
+                overlay.classList.remove('show');
+            });
+        }
+
+        // فتح وإغلاق المنتج الثاني
+        if(productCard2) {
+            productCard2.addEventListener('click', () => {
+                productModal2.classList.add('open');
+                overlay.classList.add('show');
+            });
+        }
+        if(closeModalBtn2) {
+            closeModalBtn2.addEventListener('click', () => {
+                productModal2.classList.remove('open');
+                overlay.classList.remove('show');
+            });
+        }
+
+        // إغلاق أي قائمة أو مودال مفتوح عند الضغط على التظليل الخلفي
+        if(overlay) {
+            overlay.addEventListener('click', () => {
+                sidebar.classList.remove('open');
+                productModal.classList.remove('open');
+                productModal2.classList.remove('open');
+                overlay.classList.remove('show');
+            });
+        }
+    </script>
 </body>
 </html>
