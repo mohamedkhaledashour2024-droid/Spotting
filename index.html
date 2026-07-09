@@ -410,16 +410,36 @@
         });
 
         // تعديل كود الـ overlay الحالي ليتكفل بإغلاق المودال أيضاً عند الضغط في الخلفية
-        overlay.addEventListener('click', () => {
+        ');
+                 overlay.addEventListener('click', () => {
             sidebar.classList.remove('open');
             productModal.classList.remove('open');
+            productModal2.classList.remove('open');
+            overlay.classList.remove('show');
+        });
+     
+        });
+             // تعريف عناصر المنتج الثاني الجديد
+        const productCard2 = document.getElementById('productCard2');
+        const productModal2 = document.getElementById('productModal2');
+        const closeModalBtn2 = document.getElementById('closeModalBtn2');
+
+        // أمر فتح المودال الثاني عند الضغط على الكارت الثاني
+        productCard2.addEventListener('click', () => {
+            productModal2.classList.add('open');
+            overlay.classList.add('show');
+        });
+
+        // أمر إغلاق المودال الثاني عند الضغط على زر X الخاص به
+        closeModalBtn2.addEventListener('click', () => {
+            productModal2.classList.remove('open');
             overlay.classList.remove('show');
         });
      
     </script>
     <!-- محتوى الصفحة الرئيسي (مربع المنتج) -->
     <div class="container">
-        <div class="product-card" id="productCard">
+        <div class="product-card" id="productCard2">
             <img src="IMG_20260621_083902.jpg" alt="تيشرت سبوتينج">
             <h3>تيشرت سبوتينج القطني</h3>
             <p>خامة ممتازة ومريحة جداً ملائمة لجميع الأوقات.</p>
@@ -427,8 +447,8 @@
     </div>
 
     <!-- المربع الأكبر للمنتج (Modal) -->
-    <div class="product-modal" id="productModal">
-        <button class="close-modal-btn" id="closeModalBtn">&times;</button>
+    <div class="product-modal" id="productModal2">
+        <button class="close-modal-btn" id="closeModalBtn2w">&times;</button>
         <div class="modal-body">
             <!-- القسم الأيمن: تفاصيل وأزرار الشراء -->
             <div class="modal-right">
