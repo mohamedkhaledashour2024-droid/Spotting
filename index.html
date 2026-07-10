@@ -346,7 +346,7 @@
                     <p>هذا الاصدار الحصري من تيشرت سبوتينج مصنوع من القطن الطبيعي 100%، بياقة دائرية مريحة وتصميم عصري يناسب الاستخدام اليومي. متوفر بجميع المقاسات.</p>
                 </div>
                 <div class="modal-buttons">
-                    <button type="button"class="btn-buy">شراء</button>
+                   <button type="button" class="btn-buy" onclick="document.getElementById('productModal').style.display = 'none'; document.getElementById('checkoutModal').style.display = 'block'; document.getElementById('overlay').style.display = 'block';">شراء</button>
                     <button type ="button"class="btn-cart">إضافة للعربة</button>
                 </div>
             </div>
@@ -388,7 +388,7 @@
                     <p>هذا الاصدار الحصري من تيشرت سبوتينج مصنوع من القطن الطبيعي 100%، بياقة دائرية مريحة وتصميم عصري يناسب الاستخدام اليومي. متوفر بجميع المقاسات.</p>
                 </div>
                 <div class="modal-buttons">
-                    <button type="button" class="btn-buy">شراء</button>
+                    <button type="button" class="btn-buy" onclick="document.getElementById('productModal2').style.display = 'none'; document.getElementById('checkoutModal').style.display = 'block'; document.getElementById('overlay').style.display = 'block';">شراء</button>
                     <button type="button"class="btn-cart">إضافة للعربة</button>
                 </div>
             </div>
@@ -539,15 +539,16 @@
                   /* ============================================================ */
         /* 11. معالجة نموذج إرسال البيانات والتحقق من تعبئة الحقول        */
         /* ============================================================ */
-        if(checkoutForm) {
+                if(checkoutForm) {
             checkoutForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 alert('تم تسجيل معلوماتك بنجاح! جميع الحقول مكتملة والمحافظة مختارة.');
-                if(checkoutModal) checkoutModal.classList.remove('open');
-                if(overlay) overlay.classList.remove('show');
+                document.getElementById('checkoutModal').style.display = 'none';
+                document.getElementById('overlay').style.display = 'none';
                 checkoutForm.reset();
             });
-        }
+                }
+     
     </script>
 </body>
 </html>
