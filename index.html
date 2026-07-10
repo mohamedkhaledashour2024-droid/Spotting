@@ -527,15 +527,25 @@
             });
         }
 
-        // إغلاق أي قائمة أو مودال مفتوح عند الضغط على التظليل الخلفي
+                // إغلاق نافذة البيانات عند الضغط على زر X
+        if(closeCheckoutBtn) {
+            closeCheckoutBtn.addEventListener('click', () => {
+                document.getElementById('checkoutModal').style.display = 'none';
+                document.getElementById('overlay').style.display = 'none';
+            });
+        }
+
+        // إغلاق أي شيء مفتوح عند الضغط في الخلفية المظلمة
         if(overlay) {
             overlay.addEventListener('click', () => {
                 sidebar.classList.remove('open');
-                productModal.classList.remove('open');
-                productModal2.classList.remove('open');
-                overlay.classList.remove('show');
+                if(productModal) productModal.classList.remove('open');
+                if(productModal2) productModal2.classList.remove('open');
+                document.getElementById('checkoutModal').style.display = 'none';
+                document.getElementById('overlay').style.display = 'none';
             });
-        }
+     }
+     
                   /* ============================================================ */
         /* 11. معالجة نموذج إرسال البيانات والتحقق من تعبئة الحقول        */
         /* ============================================================ */
