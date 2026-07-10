@@ -408,6 +408,64 @@
 
     <!-- طبقة التظليل الخلفية عند فتح القائمة -->
     <div class="overlay" id="overlay"></div>
+     <!-- نافذة إدخال بيانات التوصيل المنبثقة -->
+    <div class="product-modal" id="checkoutModal" style="max-height: 90vh; overflow-y: auto;">
+        <button class="close-modal-btn" id="closeCheckoutBtn">&times;</button>
+        
+        <div style="padding: 20px; text-align: center;">
+            <h2 style="margin-bottom: 20px; color: #00ff66;">ادخل معلوماتك</h2>
+            
+            <!-- نموذج إدخال البيانات -->
+            <form id="checkoutForm" style="display: flex; flex-direction: column; gap: 14px; text-align: right;">
+                
+                <!-- 1. اختيار المحافظة المحصورة -->
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <label>المحافظة:</label>
+                    <select id="governorate" required style="padding: 10px; border-radius: 6px; border: 1px solid #2d5a47; background-color: #0b1416; color: white; font-size: 14px;">
+                        <option value="" disabled selected>اختر محافظتك</option>
+                        <option value="القاهرة">القاهرة</option>
+                        <option value="الجيزة">الجيزة</option>
+                        <option value="الإسكندرية">الإسكندرية</option>
+                        <option value="القليوبية">القليوبية</option>
+                    </select>
+                </div>
+
+                <!-- 2. رقم الهاتف -->
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <label>رقم الهاتف:</label>
+                    <input type="tel" id="phone" required placeholder="مثال: 01xxxxxxxxx" style="padding: 10px; border-radius: 6px; border: 1px solid #2d5a47; background-color: #0b1416; color: white; font-size: 14px;">
+                </div>
+
+                <!-- 3. الشارع -->
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <label>الشارع (اسم أو رقم):</label>
+                    <input type="text" id="street" required placeholder="اكتب اسم أو رقم الشارع" style="padding: 10px; border-radius: 6px; border: 1px solid #2d5a47; background-color: #0b1416; color: white; font-size: 14px;">
+                </div>
+
+                <!-- 4. العمارة -->
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <label>العمارة:</label>
+                    <input type="text" id="building" required placeholder="رقم أو اسم العمارة" style="padding: 10px; border-radius: 6px; border: 1px solid #2d5a47; background-color: #0b1416; color: white; font-size: 14px;">
+                </div>
+
+                <!-- 5. الدور -->
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <label>الدور:</label>
+                    <input type="text" id="floor" required placeholder="مثال: الأرضي، الأول، الثالث" style="padding: 10px; border-radius: 6px; border: 1px solid #2d5a47; background-color: #0b1416; color: white; font-size: 14px;">
+                </div>
+
+                <!-- 6. رقم الشقة -->
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <label>رقم الشقة:</label>
+                    <input type="text" id="apartment" required placeholder="رقم الشقة أو ميزها" style="padding: 10px; border-radius: 6px; border: 1px solid #2d5a47; background-color: #0b1416; color: white; font-size: 14px;">
+                </div>
+
+                <!-- زر التأكيد النهائي -->
+                <button type="submit" class="btn-buy" style="margin-top: 10px; padding: 12px; font-size: 16px;">تأكيد وطلب التوصيل</button>
+            </form>
+        </div>
+    </div>
+ 
 
     <!-- كود الـ JavaScript للتحكم بالفتح والإغلاق (في النهاية تماماً لضمان التشغيل) -->
     <script>
@@ -478,6 +536,144 @@
                 overlay.classList.remove('show');
             });
         }
+                /* ============================================================ */
+        /* 1. تعريف عناصر القائمة الجانبية والخلفية                      */
+        /* ============================================================ */
+        const menuBtn = document.getElementById('menuBtn');
+        const sidebar = document.getElementById('sidebar');
+        const closeBtn = document.getElementById('closeBtn');
+        const overlay = document.getElementById('overlay');
+
+        /* ============================================================ */
+        /* 2. تعريف عناصر المنتج الأول والمودال الأول                    */
+        /* ============================================================ */
+        const productCard = document.getElementById('productCard');
+        const productModal = document.getElementById('productModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+
+        /* ============================================================ */
+        /* 3. تعريف عناصر المنتج الثاني والمودال الثاني                  */
+        /* ============================================================ */
+        const productCard2 = document.getElementById('productCard2');
+        const productModal2 = document.getElementById('productModal2');
+        const closeModalBtn2 = document.getElementById('closeModalBtn2');
+
+        /* ============================================================ */
+        /* 4. تعريف عناصر نافذة معلومات التوصيل الجديدة                */
+        /* ============================================================ */
+        const checkoutModal = document.getElementById('checkoutModal');
+        const closeCheckoutBtn = document.getElementById('closeCheckoutBtn');
+        const checkoutForm = document.getElementById('checkoutForm');
+
+        /* ============================================================ */
+        /* 5. أوامر فتح وإغلاق القائمة الجانبية                          */
+        /* ============================================================ */
+        if(menuBtn) {
+            menuBtn.addEventListener('click', () => {
+                sidebar.classList.add('open');
+                overlay.classList.add('show');
+            });
+        }
+        if(closeBtn) {
+            closeBtn.addEventListener('click', () => {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('show');
+            });
+        }
+
+        /* ============================================================ */
+        /* 6. أوامر فتح وإغلاق تفاصيل المنتج الأول                       */
+        /* ============================================================ */
+        if(productCard) {
+            productCard.addEventListener('click', () => {
+                productModal.classList.add('open');
+                overlay.classList.add('show');
+            });
+        }
+        if(closeModalBtn) {
+            closeModalBtn.addEventListener('click', () => {
+                productModal.classList.remove('open');
+                overlay.classList.remove('show');
+            });
+        }
+
+        /* ============================================================ */
+        /* 7. أوامر فتح وإغلاق تفاصيل المنتج الثاني                      */
+        /* ============================================================ */
+        if(productCard2) {
+            productCard2.addEventListener('click', () => {
+                productModal2.classList.add('open');
+                overlay.classList.add('show');
+            });
+        }
+        if(closeModalBtn2) {
+            closeModalBtn2.addEventListener('click', () => {
+                productModal2.classList.remove('open');
+                overlay.classList.remove('show');
+            });
+        }
+
+        /* ============================================================ */
+        /* 8. ربط أزرار الشراء الفردية مباشرة داخل كل مودال للتوصيل       */
+        /* ============================================================ */
+        if(productModal) {
+            const buyBtn1 = productModal.querySelector('.btn-buy');
+            if(buyBtn1) {
+                buyBtn1.addEventListener('click', () => {
+                    productModal.classList.remove('open');
+                    checkoutModal.classList.add('open');
+                    overlay.classList.add('show');
+                });
+            }
+        }
+
+        if(productModal2) {
+            const buyBtn2 = productModal2.querySelector('.btn-buy');
+            if(buyBtn2) {
+                buyBtn2.addEventListener('click', () => {
+                    productModal2.classList.remove('open');
+                    checkoutModal.classList.add('open');
+                    overlay.classList.add('show');
+                });
+            }
+        }
+
+        /* ============================================================ */
+        /* 9. إغلاق نافذة البيانات عند الضغط على زر X                     */
+        /* ============================================================ */
+        if(closeCheckoutBtn) {
+            closeCheckoutBtn.addEventListener('click', () => {
+                checkoutModal.classList.remove('open');
+                overlay.classList.remove('show');
+            });
+        }
+
+        /* ============================================================ */
+        /* 10. إغلاق أي شيء مفتوح عند الضغط في الخلفية المظلمة            */
+        /* ============================================================ */
+        if(overlay) {
+            overlay.addEventListener('click', () => {
+                sidebar.classList.remove('open');
+                if(productModal) productModal.classList.remove('open');
+                if(productModal2) productModal2.classList.remove('open');
+                checkoutModal.classList.remove('open');
+                overlay.classList.remove('show');
+            });
+        }
+
+        /* ============================================================ */
+        /* 11. معالجة نموذج إرسال البيانات والتحقق من تعبئة الحقول        */
+        /* ============================================================ */
+        if(checkoutForm) {
+            checkoutForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                alert('تم تسجيل معلوماتك بنجاح! جميع الحقول مكتملة والمحافظة مختارة.');
+                checkoutModal.classList.remove('open');
+                overlay.classList.remove('show');
+                checkoutForm.reset();
+            });
+        }
+         
     </script>
 </body>
 </html>
