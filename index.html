@@ -465,25 +465,20 @@
             </form>
         </div>
     </div>
-    <!-- عربة التسوق العائمة أسفل اليمين -->
-    <div id="floatingCartContainer" style="position: fixed; bottom: 20px; right: 20px; z-index: 999; display: flex; flex-direction: column; align-items: flex-end; gap: 8px; font-family: Arial, sans-serif;">
+        <!-- عربة التسوق العائمة الملتصقة أسفل اليمين -->
+    <div id="floatingCartContainer" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; align-items: flex-end; gap: 8px; font-family: Arial, sans-serif;">
         
-        <!-- الرسالة التنبيهية الصغيرة فوق العربة -->
-        <div id="cartTooltip" style="background-color: #0b1416; color: white; border: 1px solid #2d5a47; padding: 6px 12px; border-radius: 8px; font-size: 11px; white-space: nowrap; box-shadow: 0 4px 10px rgba(0,0,0,0.5); text-align: right; direction: rtl;">
-            لو عايز تشتري اللي حطيته في العربة دوس على صورة العربة
-        </div>
-
-        <!-- زر العربة والدائرة الحمراء -->
-        <div id="floatingCartBtn" style="background-color: #1a2a2f; border: 2px solid #2d5a47; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.4); transition: transform 0.2s ease;">
+        <!-- زر العربة والدائرة الحمراء بدون أي ملحوظة فوقه -->
+        <div id="floatingCartBtn" style="background-color: #1a2a2f; border: 2px solid #2d5a47; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.6); transition: transform 0.2s ease;">
             
-            <!-- أيقونة عربة السوبر ماركت SVG بدقة عالية وبدون مكتبات خارجية -->
+            <!-- أيقونة عربة السوبر ماركت بدقة عالية -->
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#00ff66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="9" cy="21" r="1"></circle>
                 <circle cx="20" cy="21" r="1"></circle>
                 <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
             </svg>
 
-            <!-- العداد المطور: دائرة حمراء ورقم أبيض فوق اليمين -->
+            <!-- العداد: دائرة حمراء ورقم أبيض -->
             <div id="cartCountBadge" style="position: absolute; top: -2px; right: -2px; background-color: #ff0000; color: #ffffff; font-size: 12px; font-weight: bold; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.3);">
                 0
             </div>
