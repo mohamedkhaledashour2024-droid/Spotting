@@ -465,7 +465,7 @@
             </form>
         </div>
     </div>
-     <!-- عربة التسوق العائمة أسفل اليمين -->
+    <!-- عربة التسوق العائمة أسفل اليمين -->
     <div id="floatingCartContainer" style="position: fixed; bottom: 20px; right: 20px; z-index: 999; display: flex; flex-direction: column; align-items: flex-end; gap: 8px; font-family: Arial, sans-serif;">
         
         <!-- الرسالة التنبيهية الصغيرة فوق العربة -->
@@ -490,7 +490,6 @@
         </div>
     </div>
  
-
     <!-- كود الـ JavaScript للتحكم بالفتح والإغلاق (في النهاية تماماً لضمان التشغيل) -->
     <script>
         const menuBtn = document.getElementById('menuBtn');
@@ -580,9 +579,9 @@
                 document.getElementById('checkoutModal').style.display = 'none';
                 document.getElementById('overlay').style.display = 'none';
                 checkoutForm.reset();
-            });
-                }
-            /* ============================================================ */
+                         });
+        }
+                 /* ============================================================ */
         /* 12. نظام عربة التسوق العائمة والعداد والرسالة التنبيهية      */
         /* ============================================================ */
         let cartCount = 0;
@@ -621,8 +620,8 @@
                     myOverlay.style.display = 'block';
                 }
             });
-                 }
-                 
+        }
+     
     </script>
 </body>
 </html>
