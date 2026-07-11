@@ -465,6 +465,30 @@
             </form>
         </div>
     </div>
+     <!-- عربة التسوق العائمة أسفل اليمين -->
+    <div id="floatingCartContainer" style="position: fixed; bottom: 20px; right: 20px; z-index: 999; display: flex; flex-direction: column; align-items: flex-end; gap: 8px; font-family: Arial, sans-serif;">
+        
+        <!-- الرسالة التنبيهية الصغيرة فوق العربة -->
+        <div id="cartTooltip" style="background-color: #0b1416; color: white; border: 1px solid #2d5a47; padding: 6px 12px; border-radius: 8px; font-size: 11px; white-space: nowrap; box-shadow: 0 4px 10px rgba(0,0,0,0.5); text-align: right; direction: rtl;">
+            لو عايز تشتري اللي حطيته في العربة دوس على صورة العربة
+        </div>
+
+        <!-- زر العربة والدائرة الحمراء -->
+        <div id="floatingCartBtn" style="background-color: #1a2a2f; border: 2px solid #2d5a47; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.4); transition: transform 0.2s ease;">
+            
+            <!-- أيقونة عربة السوبر ماركت SVG بدقة عالية وبدون مكتبات خارجية -->
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#00ff66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="9" cy="21" r="1"></circle>
+                <circle cx="20" cy="21" r="1"></circle>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+            </svg>
+
+            <!-- العداد المطور: دائرة حمراء ورقم أبيض فوق اليمين -->
+            <div id="cartCountBadge" style="position: absolute; top: -2px; right: -2px; background-color: #ff0000; color: #ffffff; font-size: 12px; font-weight: bold; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.3);">
+                0
+            </div>
+        </div>
+    </div>
  
 
     <!-- كود الـ JavaScript للتحكم بالفتح والإغلاق (في النهاية تماماً لضمان التشغيل) -->
@@ -558,7 +582,47 @@
                 checkoutForm.reset();
             });
                 }
-     
+            /* ============================================================ */
+        /* 12. نظام عربة التسوق العائمة والعداد والرسالة التنبيهية      */
+        /* ============================================================ */
+        let cartCount = 0;
+        const floatingCartBtn = document.getElementById('floatingCartBtn');
+        const cartCountBadge = document.getElementById('cartCountBadge');
+        const addToCartButtons = document.querySelectorAll('.btn-cart');
+
+        /* زيادة العداد عند الضغط على زر إضافة للعربة */
+        if(addToCartButtons.length > 0) {
+            addToCartButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    cartCount++;
+                    if(cartCountBadge) {
+                        cartCountBadge.innerText = cartCount;
+                    }
+                    alert('تم إضافة المنتج إلى عربة التسوق بنجاح! 🛒');
+                });
+            });
+        }
+
+        /* عند الضغط على أيقونة العربة: تفتح صفحة البيانات فوراً ويظهر التظليل */
+        if(floatingCartBtn) {
+            floatingCartBtn.addEventListener('click', () => {
+                const myCheckoutModal = document.getElementById('checkoutModal');
+                const myOverlay = document.getElementById('overlay');
+                
+                if(myCheckoutModal) {
+                    /* إغلاق مودالات المنتجات المفتوحة أولاً منعا للتداخل */
+                    if(productModal) productModal.style.display = 'none';
+                    if(productModal2) productModal2.style.display = 'none';
+                    
+                    /* فتح مودال إدخال البيانات المظبوط بنظام الـ display بتاعك */
+                    myCheckoutModal.style.display = 'block';
+                }
+                if(myOverlay) {
+                    myOverlay.style.display = 'block';
+                }
+            });
+                 }
+                 
     </script>
 </body>
 </html>
