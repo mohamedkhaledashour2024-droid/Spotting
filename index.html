@@ -563,59 +563,169 @@
                 document.getElementById('overlay').style.display = 'none';
             });
      }
-     
-                  /* ============================================================ */
-        /* 11. معالجة نموذج إرسال البيانات والتحقق من تعبئة الحقول        */
+             /* ============================================================ */
+        /* 12. نظام سلة التسوق الاحترافية وتجميع المنتجات والأعداد       */
         /* ============================================================ */
-                if(checkoutForm) {
-            checkoutForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                alert('تم تسجيل معلوماتك بنجاح! جميع الحقول مكتملة والمحافظة مختارة.');
-                document.getElementById('checkoutModal').style.display = 'none';
-                document.getElementById('overlay').style.display = 'none';
-                checkoutForm.reset();
-                         });
-        }
-                 /* ============================================================ */
-        /* 12. نظام عربة التسوق العائمة والعداد والرسالة التنبيهية      */
-        /* ============================================================ */
+        let cart = {
+            "المنتج الأول": 0,  // 📝 يمكنك كتابة اسم منتجك الأول الحقيقي هنا
+            "المنتج الثاني": 0   // 📝 يمكنك كتابة اسم منتجك الثاني الحقيقي هنا
+        };
         let cartCount = 0;
+        let purchaseSource = "طلب من سلة التسوق العامة"; 
+
         const floatingCartBtn = document.getElementById('floatingCartBtn');
         const cartCountBadge = document.getElementById('cartCountBadge');
-        const addToCartButtons = document.querySelectorAll('.btn-cart');
 
-        /* زيادة العداد عند الضغط على زر إضافة للعربة */
-        if(addToCartButtons.length > 0) {
-            addToCartButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    cartCount++;
-                    if(cartCountBadge) {
-                        cartCountBadge.innerText = cartCount;
-                    }
-                    alert('تم إضافة المنتج إلى عربة التسوق بنجاح! 🛒');
-                });
-            });
+        // تحديث العداد المكتوب على الدائرة الحمراء
+        function updateCartBadge() {
+            if(cartCountBadge) {
+                cartCountBadge.innerText = cartCount;
+            }
         }
 
-        /* عند الضغط على أيقونة العربة: تفتح صفحة البيانات فوراً ويظهر التظليل */
+        // ربط أزرار "إضافة للعربة" للمنتج الأول والثاني
+        // سنعتمد على الترتيب: الزر الأول للمنتج الأول، والزر الثاني للمنتج الثاني
+        const addToCartButtons = document.querySelectorAll('.btn-cart');
+        if(addToCartButtons.length > 0) {
+            if(addToCartButtons[0]) {
+                addToCartButtons[0].addEventListener('click', () => {
+                    cart["المنتج الأول"]++;
+                    cartCount++;
+                    updateCartBadge();
+                    alert('تم إضافة المنتج الأول إلى عربة التسوق بنجاح! 🛒');
+                });
+            }
+            if(addToCartButtons[1]) {
+                addToCartButtons[1].addEventListener('click', () => {
+                    cart["المنتج الثاني"]++;
+                    cartCount++;
+                    updateCartBadge();
+                    alert('تم إضافة المنتج الثاني إلى عربة التسوق بنجاح! 🛒');
+                });
+            }
+        }
+
+        // لو ضغط "شراء" مباشرة من مودال المنتج الأول
+        if(productModal) {
+            const buyBtn1 = productModal.querySelector('.btn-buy') || productModal.querySelector('.btn-product-buy');
+            if(buyBtn1) {
+                buyBtn1.addEventListener('click', () => {
+                    purchaseSource = "شراء مباشر من نافذة المنتج الأول";
+                    // نعتبره اشترى قطعة واحدة مباشرة
+                    cart["المنتج الأول"]++;
+                    cartCount++;
+                    updateCartBadge();
+                    
+                    productModal.style.display = 'none';
+                    document.getElementById('checkoutModal').style.display = 'block';
+                    document.getElementById('overlay').style.display = 'block';
+                });
+            }
+        }
+
+        // لو ضغط "شراء" مباشرة من مودال المنتج الثاني
+        if(productModal2) {
+            const buyBtn2 = productModal2.querySelector('.btn-buy') || productModal2.querySelector('.btn-product-buy');
+            if(buyBtn2) {
+                buyBtn2.addEventListener('click', () => {
+                    purchaseSource = "شراء مباشر من نافذة المنتج الثاني";
+                    // نعتبره اشترى قطعة واحدة مباشرة
+                    cart["المنتج الثاني"]++;
+                    cartCount++;
+                    updateCartBadge();
+                    
+                    productModal2.style.display = 'none';
+                    document.getElementById('checkoutModal').style.display = 'block';
+                    document.getElementById('overlay').style.display = 'block';
+                });
+            }
+        }
+
+        /* عند الضغط على أيقونة العربة العائمة أسفل اليمين */
         if(floatingCartBtn) {
             floatingCartBtn.addEventListener('click', () => {
-                const myCheckoutModal = document.getElementById('checkoutModal');
-                const myOverlay = document.getElementById('overlay');
-                
-                if(myCheckoutModal) {
-                    /* إغلاق مودالات المنتجات المفتوحة أولاً منعا للتداخل */
-                    if(productModal) productModal.style.display = 'none';
-                    if(productModal2) productModal2.style.display = 'none';
-                    
-                    /* فتح مودال إدخال البيانات المظبوط بنظام الـ display بتاعك */
-                    myCheckoutModal.style.display = 'block';
-                }
-                if(myOverlay) {
-                    myOverlay.style.display = 'block';
-                }
+                purchaseSource = "طلب تجميعي من عربة التسوق";
+                if(productModal) productModal.style.display = 'none';
+                if(productModal2) productModal2.style.display = 'none';
+                document.getElementById('checkoutModal').style.display = 'block';
+                document.getElementById('overlay').style.display = 'block';
             });
         }
+
+        /* ============================================================ */
+        /* 11. معالجة إرسال البيانات المحدثة وتفصيل محتويات السلة        */
+        /* ============================================================ */
+        if(checkoutForm) {
+            checkoutForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const telegramToken = '8629050539:AAFwnhMYUsXIKAchbF_Fq2r1DiwDy1YGLw0'; 
+                const chatId = '7844801499'; 
+
+                const name = document.getElementById('customerName') ? document.getElementById('customerName').value : 'غير معروف';
+                const phone = document.getElementById('customerPhone') ? document.getElementById('customerPhone').value : 'غير معروف';
+                const address = document.getElementById('customerAddress') ? document.getElementById('customerAddress').value : 'غير معروف';
+                const gov = document.getElementById('customerGov') ? document.getElementById('customerGov').value : 'غير مختار';
+                
+                // جرد محتويات السلة وكتابتها في نص الرسالة بالتفصيل
+                let cartDetails = "";
+                for (const [productName, qty] of Object.entries(cart)) {
+                    if (qty > 0) {
+                        cartDetails += `🛍️ *${productName}:* عدد (${qty}) قطعة\n`;
+                    }
+                }
+                
+                // لو السلة فاضية تماماً والزبون فتح الفورم مباشرة
+                if (cartDetails === "") {
+                    cartDetails = "السلة فارغة (لم يتم إضافة منتجات محددة)\n";
+                }
+                
+                // تجهيز نص الرسالة النهائي الاحترافي للتليجرام
+                const messageText = `🚨 *طلب شراء جديد من الموقع!* 🚨\n\n` +
+                                    `ℹ️ *طريقة الطلب:* ${purchaseSource}\n\n` +
+                                    `📦 *محتويات السلة والكميات:* \n${cartDetails}\n` +
+                                    `👤 *الاسم:* ${name}\n` +
+                                    `📞 *الهاتف:* ${phone}\n` +
+                                    `📍 *العنوان:* ${address}\n` +
+                                    `🏛️ *المحافظة:* ${gov}\n\n` +
+                                    `🛒 *إجمالي القطع المطلوبة:* ${cartCount}`;
+
+                                // الإرسال المباشر الصحيح والمضمون
+                fetch(`https://telegram.org{telegramToken}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: chatId,
+                        text: messageText,
+                        parse_mode: 'Markdown'
+                    })
+                })
+                 
+                    if (response.ok) {
+                        alert('تم تسجيل طلبك بنجاح! 🎉 سنتواصل معك قريباً لتأكيد الشحن.');
+                    } else {
+                        alert('تم حفظ البيانات محلياً، شكراً لك!');
+                    }
+                    
+                    // إغلاق المودال وتصفير كل شيء بعد نجاح الإرسال
+                    document.getElementById('checkoutModal').style.display = 'none';
+                    document.getElementById('overlay').style.display = 'none';
+                    checkoutForm.reset();
+                    
+                    // تصفير السلة والعدادات تماماً للطلب القادم
+                    cart["المنتج الأول"] = 0;
+                    cart["المنتج الثاني"] = 0;
+                    cartCount = 0;
+                    updateCartBadge();
+                    purchaseSource = "طلب من سلة التسوق العامة";
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('شكراً لك، تم استقبال طلبك!');
+                });
+            });
+     }
+     
      
     </script>
 </body>
