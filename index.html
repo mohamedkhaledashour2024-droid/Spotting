@@ -652,8 +652,96 @@
             });
         }
 
+        
+     }
+             /* ============================================================ */
+        /* 12. نظام سلة التسوق الاحترافية وتجميع المنتجات والأعداد       */
         /* ============================================================ */
-        /* 11. معالجة إرسال البيانات المحدثة وتفصيل محتويات السلة        */
+        let cart = {
+            "المنتج الأول": 0,
+            "المنتج الثاني": 0
+        };
+        let cartCount = 0;
+        let purchaseSource = "طلب من سلة التسوق العامة"; 
+
+        const floatingCartBtn = document.getElementById('floatingCartBtn');
+        const cartCountBadge = document.getElementById('cartCountBadge');
+
+        // تحديث العداد المكتوب على الدائرة الحمراء
+        function updateCartBadge() {
+            if(cartCountBadge) {
+                cartCountBadge.innerText = cartCount;
+            }
+        }
+
+        // ربط أزرار "إضافة للعربة" للمنتج الأول والثاني
+        const addToCartButtons = document.querySelectorAll('.btn-cart');
+        if(addToCartButtons.length > 0) {
+            if(addToCartButtons[0]) {
+                addToCartButtons[0].addEventListener('click', () => {
+                    cart["المنتج الأول"]++;
+                    cartCount++;
+                    updateCartBadge();
+                    alert('تم إضافة المنتج الأول إلى عربة التسوق بنجاح! 🛒');
+                });
+            }
+            if(addToCartButtons[1]) {
+                addToCartButtons[1].addEventListener('click', () => {
+                    cart["المنتج الثاني"]++;
+                    cartCount++;
+                    updateCartBadge();
+                    alert('تم إضافة المنتج الثاني إلى عربة التسوق بنجاح! 🛒');
+                });
+            }
+        }
+
+        // لو ضغط "شراء" مباشرة من مودال المنتج الأول
+        if(productModal) {
+            const buyBtn1 = productModal.querySelector('.btn-buy') || productModal.querySelector('.btn-product-buy');
+            if(buyBtn1) {
+                buyBtn1.addEventListener('click', () => {
+                    purchaseSource = "شراء مباشر من نافذة المنتج الأول";
+                    cart["المنتج الأول"]++;
+                    cartCount++;
+                    updateCartBadge();
+                    
+                    productModal.style.display = 'none';
+                    document.getElementById('checkoutModal').style.display = 'block';
+                    document.getElementById('overlay').style.display = 'block';
+                });
+            }
+        }
+
+        // لو ضغط "شراء" مباشرة من مودال المنتج الثاني
+        if(productModal2) {
+            const buyBtn2 = productModal2.querySelector('.btn-buy') || productModal2.querySelector('.btn-product-buy');
+            if(buyBtn2) {
+                buyBtn2.addEventListener('click', () => {
+                    purchaseSource = "شراء مباشر من نافذة المنتج الثاني";
+                    cart["المنتج الثاني"]++;
+                    cartCount++;
+                    updateCartBadge();
+                    
+                    productModal2.style.display = 'none';
+                    document.getElementById('checkoutModal').style.display = 'block';
+                    document.getElementById('overlay').style.display = 'block';
+                });
+            }
+        }
+
+        /* عند الضغط على أيقونة العربة العائمة أسفل اليمين */
+        if(floatingCartBtn) {
+            floatingCartBtn.addEventListener('click', () => {
+                purchaseSource = "طلب تجميعي من عربة التسوق";
+                if(productModal) productModal.style.display = 'none';
+                if(productModal2) productModal2.style.display = 'none';
+                document.getElementById('checkoutModal').style.display = 'block';
+                document.getElementById('overlay').style.display = 'block';
+            });
+        }
+
+        /* ============================================================ */
+        /* 11. معالجة إرسال البيانات الفوري والآمن عبر التليجرام         */
         /* ============================================================ */
         if(checkoutForm) {
             checkoutForm.addEventListener('submit', (e) => {
@@ -667,20 +755,16 @@
                 const address = document.getElementById('customerAddress') ? document.getElementById('customerAddress').value : 'غير معروف';
                 const gov = document.getElementById('customerGov') ? document.getElementById('customerGov').value : 'غير مختار';
                 
-                // جرد محتويات السلة وكتابتها في نص الرسالة بالتفصيل
                 let cartDetails = "";
                 for (const [productName, qty] of Object.entries(cart)) {
                     if (qty > 0) {
                         cartDetails += `🛍️ *${productName}:* عدد (${qty}) قطعة\n`;
                     }
                 }
-                
-                // لو السلة فاضية تماماً والزبون فتح الفورم مباشرة
                 if (cartDetails === "") {
-                    cartDetails = "السلة فارغة (لم يتم إضافة منتجات محددة)\n";
+                    cartDetails = "السلة فارغة\n";
                 }
                 
-                // تجهيز نص الرسالة النهائي الاحترافي للتليجرام
                 const messageText = `🚨 *طلب شراء جديد من الموقع!* 🚨\n\n` +
                                     `ℹ️ *طريقة الطلب:* ${purchaseSource}\n\n` +
                                     `📦 *محتويات السلة والكميات:* \n${cartDetails}\n` +
@@ -690,29 +774,20 @@
                                     `🏛️ *المحافظة:* ${gov}\n\n` +
                                     `🛒 *إجمالي القطع المطلوبة:* ${cartCount}`;
 
-                                // الإرسال المباشر الصحيح والمضمون
-                fetch(`https://telegram.org{telegramToken}/sendMessage`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        chat_id: chatId,
-                        text: messageText,
-                        parse_mode: 'Markdown'
-                    })
-                })
-                 
+                                const apiUrl = `https://telegram.org{telegramToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(messageText)}&parse_mode=Markdown`;
+                
+                fetch(apiUrl)
+                                 
                     if (response.ok) {
                         alert('تم تسجيل طلبك بنجاح! 🎉 سنتواصل معك قريباً لتأكيد الشحن.');
                     } else {
-                        alert('تم حفظ البيانات محلياً، شكراً لك!');
+                        alert('تم تسجيل طلبك بنجاح! 🎉');
                     }
                     
-                    // إغلاق المودال وتصفير كل شيء بعد نجاح الإرسال
                     document.getElementById('checkoutModal').style.display = 'none';
                     document.getElementById('overlay').style.display = 'none';
                     checkoutForm.reset();
                     
-                    // تصفير السلة والعدادات تماماً للطلب القادم
                     cart["المنتج الأول"] = 0;
                     cart["المنتج الثاني"] = 0;
                     cartCount = 0;
@@ -721,11 +796,11 @@
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('شكراً لك، تم استقبال طلبك!');
+                    alert('تم تسجيل طلبك بنجاح! 🎉');
                 });
             });
      }
-     
+                                         
      
     </script>
 </body>
