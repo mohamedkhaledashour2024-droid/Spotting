@@ -484,7 +484,7 @@
             </div>
         </div>
     </div>
-        <script>
+              <script>
         /* ============================================================ */
         /* 1. تعريف عناصر القائمة الجانبية والخلفية                      */
         /* ============================================================ */
@@ -514,31 +514,33 @@
         const checkoutForm = document.getElementById('checkoutForm');
 
         /* ============================================================ */
-        /* 5. تشغيل الـ Slidebar والرسالة الصفراء تحت الإنشاء          */
+        /* 5. تشغيل الـ Sidebar والربط مع الكلاسات الاحترافية open و show */
         /* ============================================================ */
         if(sidebar) {
             sidebar.innerHTML = `
                 <div style="position: absolute; top: 15px; left: 15px; cursor: pointer; font-size: 24px; color: white;" id="closeBtn">&times;</div>
-                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 80%; color: #ffcc00; font-family: Arial, sans-serif; font-size: 18px; font-weight: bold; text-align: center; gap: 10px; padding: 20px;">
-                    <span>⚠️</span>
-                    <span>تحت الإنشاء</span>
+                <div class="sidebar-content">
+                    <div class="under-construction">
+                        <span>⚠️</span><br>
+                        <span>تحت الإنشاء</span>
+                    </div>
                 </div>
             `;
         }
 
-        // دالة فتح القائمة الجانبية عند الضغط على الزر أعلى اليسار
+        // فتح القائمة الجانبية بإضافة كلاس open و show المكتوبين بالـ CSS
         if(menuBtn) {
             menuBtn.addEventListener('click', () => {
-                if(sidebar) sidebar.style.display = 'block';
-                if(overlay) overlay.style.display = 'block';
+                if(sidebar) sidebar.classList.add('open');
+                if(overlay) overlay.classList.add('show');
             });
         }
 
-        // دالة إغلاق القائمة الجانبية عند الضغط على زر X الداخلي
+        // إغلاق القائمة الجانبية عند الضغط على زر X
         document.addEventListener('click', (e) => {
             if(e.target && e.target.id === 'closeBtn') {
-                if(sidebar) sidebar.style.display = 'none';
-                if(overlay) overlay.style.display = 'none';
+                if(sidebar) sidebar.classList.remove('open');
+                if(overlay) overlay.classList.remove('show');
             }
         });
 
@@ -548,28 +550,28 @@
         if(productCard) {
             productCard.addEventListener('click', () => {
                 if(productModal) productModal.style.display = 'block';
-                if(overlay) overlay.style.display = 'block';
+                if(overlay) overlay.classList.add('show');
             });
         }
         if(closeModalBtn) {
             closeModalBtn.addEventListener('click', () => {
                 if(productModal) productModal.style.display = 'none';
-                if(overlay) overlay.style.display = 'none';
+                if(overlay) overlay.classList.remove('show');
             });
         }
-                 /* ============================================================ */
+                       /* ============================================================ */
         /* 7. أوامر فتح وإغلاق تفاصيل المنتج الثاني                      */
         /* ============================================================ */
         if(productCard2) {
             productCard2.addEventListener('click', () => {
                 if(productModal2) productModal2.style.display = 'block';
-                if(overlay) overlay.style.display = 'block';
+                if(overlay) overlay.classList.add('show');
             });
         }
         if(closeModalBtn2) {
             closeModalBtn2.addEventListener('click', () => {
                 if(productModal2) productModal2.style.display = 'none';
-                if(overlay) overlay.style.display = 'none';
+                if(overlay) overlay.classList.remove('show');
             });
         }
 
@@ -578,11 +580,11 @@
         /* ============================================================ */
         if(overlay) {
             overlay.addEventListener('click', () => {
-                if(sidebar) sidebar.style.display = 'none';
+                if(sidebar) sidebar.classList.remove('open');
                 if(productModal) productModal.style.display = 'none';
                 if(productModal2) productModal2.style.display = 'none';
                 if(checkoutModal) checkoutModal.style.display = 'none';
-                overlay.style.display = 'none';
+                overlay.classList.remove('show');
             });
         }
 
@@ -592,7 +594,7 @@
         if(closeCheckoutBtn) {
             closeCheckoutBtn.addEventListener('click', () => {
                 if(checkoutModal) checkoutModal.style.display = 'none';
-                if(overlay) overlay.style.display = 'none';
+                if(overlay) overlay.classList.remove('show');
             });
         }
 
@@ -635,7 +637,7 @@
                     purchaseSource = "شراء مباشر من نافذة المنتج الأول";
                     productModal.style.display = 'none';
                     if(checkoutModal) checkoutModal.style.display = 'block';
-                    if(overlay) overlay.style.display = 'block';
+                    if(overlay) overlay.classList.add('show');
                 });
             }
         }
@@ -647,7 +649,7 @@
                     purchaseSource = "شراء مباشر من نافذة المنتج الثاني";
                     productModal2.style.display = 'none';
                     if(checkoutModal) checkoutModal.style.display = 'block';
-                    if(overlay) overlay.style.display = 'block';
+                    if(overlay) overlay.classList.add('show');
                 });
             }
         }
@@ -658,7 +660,7 @@
                 if(productModal) productModal.style.display = 'none';
                 if(productModal2) productModal2.style.display = 'none';
                 if(checkoutModal) checkoutModal.style.display = 'block';
-                if(overlay) overlay.style.display = 'block';
+                if(overlay) overlay.classList.add('show');
             });
         }
 
@@ -700,7 +702,7 @@
                 .then(response => {
                     alert('تم تسجيل طلبك بنجاح! 🎉 سنتواصل معك قريباً لتأكيد الشحن.');
                     if(checkoutModal) checkoutModal.style.display = 'none';
-                    if(overlay) overlay.style.display = 'none';
+                    if(overlay) overlay.classList.remove('show');
                     checkoutForm.reset();
                     cart["المنتج الأول"] = 0; cart["المنتج الثاني"] = 0; cartCount = 0;
                     updateCartBadge();
