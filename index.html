@@ -664,7 +664,7 @@
             });
         }
 
-        /* ============================================================ */
+                /* ============================================================ */
         /* 11. معالجة إرسال البيانات الفوري والآمن عبر التليجرام         */
         /* ============================================================ */
         if(checkoutForm) {
@@ -679,24 +679,28 @@
                 const address = document.getElementById('customerAddress') ? document.getElementById('customerAddress').value : 'غير معروف';
                 const gov = document.getElementById('customerGov') ? document.getElementById('customerGov').value : 'غير مختار';
                 
+                // جرد السلة
                 let cartDetails = "";
                 for (const [productName, qty] of Object.entries(cart)) {
                     if (qty > 0) {
-                        cartDetails += `🛍️ *${productName}:* عدد (${qty}) قطعة\n`;
+                        cartDetails += `- ${productName}: عدد (${qty}) قطعة\n`;
                     }
                 }
-                if (cartDetails === "") cartDetails = "شراء فوري مباشر بدون إضافة للسلة\n";
+                if (cartDetails === "") {
+                    cartDetails = "شراء فوري مباشر بدون إضافة للسلة\n";
+                }
                 
-                const messageText = `🚨 *طلب شراء جديد من الموقع!* 🚨\n\n` +
-                                    `ℹ️ *طريقة الطلب:* ${purchaseSource}\n\n` +
-                                    `📦 *محتويات السلة والكميات:* \n${cartDetails}\n` +
-                                    `👤 *الاسم:* ${name}\n` +
-                                    `📞 *الهاتف:* ${phone}\n` +
-                                    `📍 *العنوان:* ${address}\n` +
-                                    `🏛️ *المحافظة:* ${gov}\n\n` +
-                                    `🛒 *إجمالي القطع المطلوبة:* ${cartCount}`;
+                // نص الرسالة النظيف والخام بدون رموز معقدة لضمان القبول الفوري في السيرفر
+                const messageText = `🚨 طلب شراء جديد من الموقع! 🚨\n\n` +
+                                    `ℹ️ طريقة الطلب: ${purchaseSource}\n\n` +
+                                    `📦 محتويات الطلب:\n${cartDetails}\n` +
+                                    `👤 الاسم: ${name}\n` +
+                                    `📞 الهاتف: ${phone}\n` +
+                                    `📍 العنوان: ${address}\n` +
+                                    `🏛️ المحافظة: ${gov}\n\n` +
+                                    `🛒 إجمالي القطع: ${cartCount}`;
 
-                const apiUrl = `https://telegram.org{telegramToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(messageText)}&parse_mode=Markdown`;
+                const apiUrl = `https://telegram.org{telegramToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(messageText)}`;
                 
                 fetch(apiUrl)
                 .then(response => {
@@ -704,6 +708,8 @@
                     if(checkoutModal) checkoutModal.style.display = 'none';
                     if(overlay) overlay.classList.remove('show');
                     checkoutForm.reset();
+                    
+                    // تصفير السلة بعد نجاح الإرسال
                     cart["المنتج الأول"] = 0; cart["المنتج الثاني"] = 0; cartCount = 0;
                     updateCartBadge();
                     purchaseSource = "طلب من سلة التسوق العامة";
@@ -713,7 +719,8 @@
                     alert('تم تسجيل طلبك بنجاح! 🎉');
                 });
             });
-        }
+               }
+               
     </script>
 </body>
 </html>
