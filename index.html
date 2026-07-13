@@ -484,14 +484,12 @@
             </div>
         </div>
     </div>
- 
-           <script>
+        <script>
         /* ============================================================ */
         /* 1. تعريف عناصر القائمة الجانبية والخلفية                      */
         /* ============================================================ */
         const menuBtn = document.getElementById('menuBtn');
         const sidebar = document.getElementById('sidebar');
-        const closeBtn = document.getElementById('closeBtn');
         const overlay = document.getElementById('overlay');
 
         /* ============================================================ */
@@ -516,20 +514,33 @@
         const checkoutForm = document.getElementById('checkoutForm');
 
         /* ============================================================ */
-        /* 5. أوامر فتح وإغلاق القائمة الجانبية                          */
+        /* 5. تشغيل الـ Slidebar والرسالة الصفراء تحت الإنشاء          */
         /* ============================================================ */
+        if(sidebar) {
+            sidebar.innerHTML = `
+                <div style="position: absolute; top: 15px; left: 15px; cursor: pointer; font-size: 24px; color: white;" id="closeBtn">&times;</div>
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 80%; color: #ffcc00; font-family: Arial, sans-serif; font-size: 18px; font-weight: bold; text-align: center; gap: 10px; padding: 20px;">
+                    <span>⚠️</span>
+                    <span>تحت الإنشاء</span>
+                </div>
+            `;
+        }
+
+        // دالة فتح القائمة الجانبية عند الضغط على الزر أعلى اليسار
         if(menuBtn) {
             menuBtn.addEventListener('click', () => {
                 if(sidebar) sidebar.style.display = 'block';
                 if(overlay) overlay.style.display = 'block';
             });
         }
-        if(closeBtn) {
-            closeBtn.addEventListener('click', () => {
+
+        // دالة إغلاق القائمة الجانبية عند الضغط على زر X الداخلي
+        document.addEventListener('click', (e) => {
+            if(e.target && e.target.id === 'closeBtn') {
                 if(sidebar) sidebar.style.display = 'none';
                 if(overlay) overlay.style.display = 'none';
-            });
-        }
+            }
+        });
 
         /* ============================================================ */
         /* 6. أوامر فتح وإغلاق تفاصيل المنتج الأول                       */
@@ -546,8 +557,7 @@
                 if(overlay) overlay.style.display = 'none';
             });
         }
-
-        /* ============================================================ */
+                 /* ============================================================ */
         /* 7. أوامر فتح وإغلاق تفاصيل المنتج الثاني                      */
         /* ============================================================ */
         if(productCard2) {
@@ -572,7 +582,7 @@
                 if(productModal) productModal.style.display = 'none';
                 if(productModal2) productModal2.style.display = 'none';
                 if(checkoutModal) checkoutModal.style.display = 'none';
-                if(overlay) overlay.style.display = 'none';
+                overlay.style.display = 'none';
             });
         }
 
@@ -585,8 +595,9 @@
                 if(overlay) overlay.style.display = 'none';
             });
         }
-                    /* ============================================================ */
-        /* 10. نظام سلة التسوق الاحترافية وتجميع المنتجات والأعداد       */
+
+        /* ============================================================ */
+        /* 10. نظام سلة التسوق الاحترافية والعداد الفردي وحصري          */
         /* ============================================================ */
         let cart = { "المنتج الأول": 0, "المنتج الثاني": 0 };
         let cartCount = 0;
@@ -599,6 +610,7 @@
             if(cartCountBadge) cartCountBadge.innerText = cartCount;
         }
 
+        // زيادة العداد فقط وحصرياً عند الضغط على أزرار "إضافة للعربة"
         const addToCartButtons = document.querySelectorAll('.btn-cart');
         if(addToCartButtons.length > 0) {
             if(addToCartButtons[0]) {
@@ -615,12 +627,12 @@
             }
         }
 
+        // عند الضغط على "شراء مباشر" (لا يزود العداد تحت بناء على طلبك)
         if(productModal) {
             const buyBtn1 = productModal.querySelector('.btn-buy') || productModal.querySelector('.btn-product-buy');
             if(buyBtn1) {
                 buyBtn1.addEventListener('click', () => {
                     purchaseSource = "شراء مباشر من نافذة المنتج الأول";
-                    cart["المنتج الأول"]++; cartCount++; updateCartBadge();
                     productModal.style.display = 'none';
                     if(checkoutModal) checkoutModal.style.display = 'block';
                     if(overlay) overlay.style.display = 'block';
@@ -633,7 +645,6 @@
             if(buyBtn2) {
                 buyBtn2.addEventListener('click', () => {
                     purchaseSource = "شراء مباشر من نافذة المنتج الثاني";
-                    cart["المنتج الثاني"]++; cartCount++; updateCartBadge();
                     productModal2.style.display = 'none';
                     if(checkoutModal) checkoutModal.style.display = 'block';
                     if(overlay) overlay.style.display = 'block';
@@ -672,7 +683,7 @@
                         cartDetails += `🛍️ *${productName}:* عدد (${qty}) قطعة\n`;
                     }
                 }
-                if (cartDetails === "") cartDetails = "السلة فارغة\n";
+                if (cartDetails === "") cartDetails = "شراء فوري مباشر بدون إضافة للسلة\n";
                 
                 const messageText = `🚨 *طلب شراء جديد من الموقع!* 🚨\n\n` +
                                     `ℹ️ *طريقة الطلب:* ${purchaseSource}\n\n` +
@@ -704,6 +715,3 @@
     </script>
 </body>
 </html>
-
-     
-    
