@@ -700,8 +700,10 @@
                                     `🏛️ المحافظة: ${gov}\n\n` +
                                     `🛒 إجمالي القطع: ${cartCount}`;
 
-                const apiUrl = `https://telegram.org{telegramToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(messageText)}`;
-                
+                const baseUrl = `https://telegram.org{telegramToken}/sendMessage`;
+const queryParams = `?chat_id=${chatId}&text=${encodeURIComponent(messageText)}&parse_mode=Markdown`;
+const apiUrl = baseUrl + queryParams;
+         
                 fetch(apiUrl)
                 .then(response => {
                     alert('تم تسجيل طلبك بنجاح! 🎉 سنتواصل معك قريباً لتأكيد الشحن.');
