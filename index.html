@@ -485,178 +485,173 @@
         </div>
     </div>
  
-    <!-- كود الـ JavaScript للتحكم بالفتح والإغلاق (في النهاية تماماً لضمان التشغيل) -->
-    <script>
+           <script>
+        /* ============================================================ */
+        /* 1. تعريف عناصر القائمة الجانبية والخلفية                      */
+        /* ============================================================ */
         const menuBtn = document.getElementById('menuBtn');
         const sidebar = document.getElementById('sidebar');
         const closeBtn = document.getElementById('closeBtn');
         const overlay = document.getElementById('overlay');
 
-        // كروت المنتجات والمودالات
+        /* ============================================================ */
+        /* 2. تعريف عناصر المنتج الأول والمودال الأول                    */
+        /* ============================================================ */
         const productCard = document.getElementById('productCard');
         const productModal = document.getElementById('productModal');
         const closeModalBtn = document.getElementById('closeModalBtn');
 
+        /* ============================================================ */
+        /* 3. تعريف عناصر المنتج الثاني والمودال الثاني                  */
+        /* ============================================================ */
         const productCard2 = document.getElementById('productCard2');
         const productModal2 = document.getElementById('productModal2');
         const closeModalBtn2 = document.getElementById('closeModalBtn2');
 
-        // فتح القائمة عند الضغط على زر الهامبرغر
+        /* ============================================================ */
+        /* 4. تعريف عناصر نافذة معلومات التوصيل الجديدة                */
+        /* ============================================================ */
+        const checkoutModal = document.getElementById('checkoutModal');
+        const closeCheckoutBtn = document.getElementById('closeCheckoutBtn');
+        const checkoutForm = document.getElementById('checkoutForm');
+
+        /* ============================================================ */
+        /* 5. أوامر فتح وإغلاق القائمة الجانبية                          */
+        /* ============================================================ */
         if(menuBtn) {
             menuBtn.addEventListener('click', () => {
-                sidebar.classList.add('open');
-                overlay.classList.add('show');
+                if(sidebar) sidebar.style.display = 'block';
+                if(overlay) overlay.style.display = 'block';
             });
         }
-
-        // إغلاق القائمة عند الضغط على زر X
         if(closeBtn) {
             closeBtn.addEventListener('click', () => {
-                sidebar.classList.remove('open');
-                overlay.classList.remove('show');
+                if(sidebar) sidebar.style.display = 'none';
+                if(overlay) overlay.style.display = 'none';
             });
         }
 
-        // فتح وإغلاق المنتج الأول
+        /* ============================================================ */
+        /* 6. أوامر فتح وإغلاق تفاصيل المنتج الأول                       */
+        /* ============================================================ */
         if(productCard) {
             productCard.addEventListener('click', () => {
-                productModal.classList.add('open');
-                overlay.classList.add('show');
+                if(productModal) productModal.style.display = 'block';
+                if(overlay) overlay.style.display = 'block';
             });
         }
         if(closeModalBtn) {
             closeModalBtn.addEventListener('click', () => {
-                productModal.classList.remove('open');
-                overlay.classList.remove('show');
+                if(productModal) productModal.style.display = 'none';
+                if(overlay) overlay.style.display = 'none';
             });
         }
 
-        // فتح وإغلاق المنتج الثاني
+        /* ============================================================ */
+        /* 7. أوامر فتح وإغلاق تفاصيل المنتج الثاني                      */
+        /* ============================================================ */
         if(productCard2) {
             productCard2.addEventListener('click', () => {
-                productModal2.classList.add('open');
-                overlay.classList.add('show');
+                if(productModal2) productModal2.style.display = 'block';
+                if(overlay) overlay.style.display = 'block';
             });
         }
         if(closeModalBtn2) {
             closeModalBtn2.addEventListener('click', () => {
-                productModal2.classList.remove('open');
-                overlay.classList.remove('show');
+                if(productModal2) productModal2.style.display = 'none';
+                if(overlay) overlay.style.display = 'none';
             });
         }
 
-                // إغلاق نافذة البيانات عند الضغط على زر X
-        if(closeCheckoutBtn) {
-            closeCheckoutBtn.addEventListener('click', () => {
-                document.getElementById('checkoutModal').style.display = 'none';
-                document.getElementById('overlay').style.display = 'none';
-            });
-        }
-
-        // إغلاق أي شيء مفتوح عند الضغط في الخلفية المظلمة
+        /* ============================================================ */
+        /* 8. إغلاق أي شيء مفتوح عند الضغط في الخلفية المظلمة            */
+        /* ============================================================ */
         if(overlay) {
             overlay.addEventListener('click', () => {
-                sidebar.classList.remove('open');
-                if(productModal) productModal.classList.remove('open');
-                if(productModal2) productModal2.classList.remove('open');
-                document.getElementById('checkoutModal').style.display = 'none';
-                document.getElementById('overlay').style.display = 'none';
+                if(sidebar) sidebar.style.display = 'none';
+                if(productModal) productModal.style.display = 'none';
+                if(productModal2) productModal2.style.display = 'none';
+                if(checkoutModal) checkoutModal.style.display = 'none';
+                if(overlay) overlay.style.display = 'none';
             });
-     }
-             
-                    
-                    
+        }
 
-        
-     }
-             /* ============================================================ */
-        /* 12. نظام سلة التسوق الاحترافية وتجميع المنتجات والأعداد       */
         /* ============================================================ */
-        let cart = {
-            "المنتج الأول": 0,
-            "المنتج الثاني": 0
-        };
+        /* 9. إغلاق نافذة البيانات عند الضغط على زر X                     */
+        /* ============================================================ */
+        if(closeCheckoutBtn) {
+            closeCheckoutBtn.addEventListener('click', () => {
+                if(checkoutModal) checkoutModal.style.display = 'none';
+                if(overlay) overlay.style.display = 'none';
+            });
+        }
+                    /* ============================================================ */
+        /* 10. نظام سلة التسوق الاحترافية وتجميع المنتجات والأعداد       */
+        /* ============================================================ */
+        let cart = { "المنتج الأول": 0, "المنتج الثاني": 0 };
         let cartCount = 0;
         let purchaseSource = "طلب من سلة التسوق العامة"; 
 
         const floatingCartBtn = document.getElementById('floatingCartBtn');
         const cartCountBadge = document.getElementById('cartCountBadge');
 
-        // تحديث العداد المكتوب على الدائرة الحمراء
         function updateCartBadge() {
-            if(cartCountBadge) {
-                cartCountBadge.innerText = cartCount;
-            }
+            if(cartCountBadge) cartCountBadge.innerText = cartCount;
         }
 
-        // ربط أزرار "إضافة للعربة" للمنتج الأول والثاني
         const addToCartButtons = document.querySelectorAll('.btn-cart');
         if(addToCartButtons.length > 0) {
             if(addToCartButtons[0]) {
                 addToCartButtons[0].addEventListener('click', () => {
-                    cart["المنتج الأول"]++;
-                    cartCount++;
-                    updateCartBadge();
+                    cart["المنتج الأول"]++; cartCount++; updateCartBadge();
                     alert('تم إضافة المنتج الأول إلى عربة التسوق بنجاح! 🛒');
                 });
             }
             if(addToCartButtons[1]) {
                 addToCartButtons[1].addEventListener('click', () => {
-                    cart["المنتج الثاني"]++;
-                    cartCount++;
-                    updateCartBadge();
+                    cart["المنتج الثاني"]++; cartCount++; updateCartBadge();
                     alert('تم إضافة المنتج الثاني إلى عربة التسوق بنجاح! 🛒');
                 });
             }
         }
 
-        // لو ضغط "شراء" مباشرة من مودال المنتج الأول
         if(productModal) {
             const buyBtn1 = productModal.querySelector('.btn-buy') || productModal.querySelector('.btn-product-buy');
             if(buyBtn1) {
                 buyBtn1.addEventListener('click', () => {
                     purchaseSource = "شراء مباشر من نافذة المنتج الأول";
-                    cart["المنتج الأول"]++;
-                    cartCount++;
-                    updateCartBadge();
-                    
+                    cart["المنتج الأول"]++; cartCount++; updateCartBadge();
                     productModal.style.display = 'none';
-                    document.getElementById('checkoutModal').style.display = 'block';
-                    document.getElementById('overlay').style.display = 'block';
+                    if(checkoutModal) checkoutModal.style.display = 'block';
+                    if(overlay) overlay.style.display = 'block';
                 });
             }
         }
 
-        // لو ضغط "شراء" مباشرة من مودال المنتج الثاني
         if(productModal2) {
             const buyBtn2 = productModal2.querySelector('.btn-buy') || productModal2.querySelector('.btn-product-buy');
             if(buyBtn2) {
                 buyBtn2.addEventListener('click', () => {
                     purchaseSource = "شراء مباشر من نافذة المنتج الثاني";
-                    cart["المنتج الثاني"]++;
-                    cartCount++;
-                    updateCartBadge();
-                    
+                    cart["المنتج الثاني"]++; cartCount++; updateCartBadge();
                     productModal2.style.display = 'none';
-                    document.getElementById('checkoutModal').style.display = 'block';
-                    document.getElementById('overlay').style.display = 'block';
+                    if(checkoutModal) checkoutModal.style.display = 'block';
+                    if(overlay) overlay.style.display = 'block';
                 });
             }
         }
 
-        /* عند الضغط على أيقونة العربة العائمة أسفل اليمين */
         if(floatingCartBtn) {
             floatingCartBtn.addEventListener('click', () => {
                 purchaseSource = "طلب تجميعي من عربة التسوق";
                 if(productModal) productModal.style.display = 'none';
                 if(productModal2) productModal2.style.display = 'none';
-                document.getElementById('checkoutModal').style.display = 'block';
-                document.getElementById('overlay').style.display = 'block';
+                if(checkoutModal) checkoutModal.style.display = 'block';
+                if(overlay) overlay.style.display = 'block';
             });
         }
 
-        
-                 /* ============================================================ */
+        /* ============================================================ */
         /* 11. معالجة إرسال البيانات الفوري والآمن عبر التليجرام         */
         /* ============================================================ */
         if(checkoutForm) {
@@ -677,9 +672,7 @@
                         cartDetails += `🛍️ *${productName}:* عدد (${qty}) قطعة\n`;
                     }
                 }
-                if (cartDetails === "") {
-                    cartDetails = "السلة فارغة\n";
-                }
+                if (cartDetails === "") cartDetails = "السلة فارغة\n";
                 
                 const messageText = `🚨 *طلب شراء جديد من الموقع!* 🚨\n\n` +
                                     `ℹ️ *طريقة الطلب:* ${purchaseSource}\n\n` +
@@ -690,19 +683,15 @@
                                     `🏛️ *المحافظة:* ${gov}\n\n` +
                                     `🛒 *إجمالي القطع المطلوبة:* ${cartCount}`;
 
-                                const apiUrl = `https://telegram.org{telegramToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(messageText)}&parse_mode=Markdown`;
-             
+                const apiUrl = `https://telegram.org{telegramToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(messageText)}&parse_mode=Markdown`;
+                
                 fetch(apiUrl)
                 .then(response => {
                     alert('تم تسجيل طلبك بنجاح! 🎉 سنتواصل معك قريباً لتأكيد الشحن.');
-                    
-                    document.getElementById('checkoutModal').style.display = 'none';
-                    document.getElementById('overlay').style.display = 'none';
+                    if(checkoutModal) checkoutModal.style.display = 'none';
+                    if(overlay) overlay.style.display = 'none';
                     checkoutForm.reset();
-                    
-                    cart["المنتج الأول"] = 0;
-                    cart["المنتج الثاني"] = 0;
-                    cartCount = 0;
+                    cart["المنتج الأول"] = 0; cart["المنتج الثاني"] = 0; cartCount = 0;
                     updateCartBadge();
                     purchaseSource = "طلب من سلة التسوق العامة";
                 })
@@ -712,8 +701,9 @@
                 });
             });
         }
-     
-     
     </script>
 </body>
 </html>
+
+     
+    
