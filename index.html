@@ -665,65 +665,80 @@
         }
 
                 /* ============================================================ */
-        /* 11. معالجة إرسال البيانات الفوري والآمن عبر التليجرام         */
-        /* ============================================================ */
-        if(checkoutForm) {
-            checkoutForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const telegramToken = `8629050539:AAFwnhMYUsXIKAChbF_Fq2r1DiwDylYGLw0`;
-             
-              const chatId = `7844801499`;
-               
-                const name = document.getElementById('customerName') ? document.getElementById('customerName').value : 'غير معروف';
-                const phone = document.getElementById('customerPhone') ? document.getElementById('customerPhone').value : 'غير معروف';
-                const address = document.getElementById('customerAddress') ? document.getElementById('customerAddress').value : 'غير معروف';
-                const gov = document.getElementById('customerGov') ? document.getElementById('customerGov').value : 'غير مختار';
-                
-                // جرد السلة
-                let cartDetails = "";
-                for (const [productName, qty] of Object.entries(cart)) {
-                    if (qty > 0) {
-                        cartDetails += `- ${productName}: عدد (${qty}) قطعة\n`;
-                    }
-                }
-                if (cartDetails === "") {
-                    cartDetails = "شراء فوري مباشر بدون إضافة للسلة\n";
-                }
-                
-                // نص الرسالة النظيف والخام بدون رموز معقدة لضمان القبول الفوري في السيرفر
-                const messageText = `🚨 طلب شراء جديد من الموقع! 🚨\n\n` +
-                                    `ℹ️ طريقة الطلب: ${purchaseSource}\n\n` +
-                                    `📦 محتويات الطلب:\n${cartDetails}\n` +
-                                    `👤 الاسم: ${name}\n` +
-                                    `📞 الهاتف: ${phone}\n` +
-                                    `📍 العنوان: ${address}\n` +
-                                    `🏛️ المحافظة: ${gov}\n\n` +
-                                    `🛒 إجمالي القطع: ${cartCount}`;
+/* 11. معالجة إرسال البيانات الفوري والآمن عبر التليجرام         */
+/* ============================================================ */
+if(checkoutForm) {
+    checkoutForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const telegramToken = `8629050539:AAFwnhMYUsXIKAChbF_Fq2r1DiwDylYGLw0`;
+        const chatId = `7844801499`;
+       
+        const name = document.getElementById('customerName') ? document.getElementById('customerName').value : 'غير معروف';
+        const phone = document.getElementById('customerPhone') ? document.getElementById('customerPhone').value : 'غير معروف';
+        const address = document.getElementById('customerAddress') ? document.getElementById('customerAddress').value : 'غير معروف';
+        const gov = document.getElementById('customerGov') ? document.getElementById('customerGov').value : 'غير مختار';
+        
+        // جرد السلة
+        let cartDetails = "";
+        for (const [productName, qty] of Object.entries(cart)) {
+            if (qty > 0) {
+                cartDetails += `- ${productName}: عدد (${qty}) قطعة\n`;
+            }
+        }
+        if (cartDetails === "") {
+            cartDetails = "شراء فوري مباشر بدون إضافة للسلة\n";
+        }
+        
+        // نص الرسالة النظيف
+        const messageText = `🚨 طلب شراء جديد من الموقع! 🚨\n\n` +
+                            `ℹ️ طريقة الطلب: ${purchaseSource}\n\n` +
+                            `📦 محتويات الطلب:\n${cartDetails}\n` +
+                            `👤 الاسم: ${name}\n` +
+                            `📞 الهاتف: ${phone}\n` +
+                            `📍 العنوان: ${address}\n` +
+                            `🏛️ المحافظة: ${gov}\n\n` +
+                            `🛒 إجمالي القطع: ${cartCount}`;
 
-                const part1 = 'https://telegram.org:';
-const part2 = 'AAFwnhMYUsXIKAChbF_Fq2r1DiwDy1YGLw0';
-const baseUrl = part1 + part2 + '/sendMessage';
-const queryParams = `?chat_id=${chatId}&text=${encodeURIComponent(messageText)}&parse_mode=Markdown`;
-const apiUrl = baseUrl + queryParams;
-               
-                fetch(apiUrl)
-                .then(response => {
-                    alert('تم تسجيل طلبك بنجاح! 🎉 سنتواصل معك قريباً لتأكيد الشحن.');
-                    if(checkoutModal) checkoutModal.style.display = 'none';
-                    if(overlay) overlay.classList.remove('show');
-                    checkoutForm.reset();
-                    
-                    // تصفير السلة بعد نجاح الإرسال
-                    cart["المنتج الأول"] = 0; cart["المنتج الثاني"] = 0; cartCount = 0;
-                    updateCartBadge();
-                    purchaseSource = "طلب من سلة التسوق العامة";
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('تم تسجيل طلبك بنجاح! 🎉');
-                });
-            });
+        // تعديل الرابط بالشكل الصحيح والقياسي لـ Telegram API
+        const apiUrl = `https://telegram.org{telegramToken}/sendMessage`;
+       
+        // إرسال الطلب عبر دالة fetch بالاعتماد على طريقة POST الآمنة
+        fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                chat_id: chatId,
+                text: messageText,
+                parse_mode: 'Markdown'
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('فشل إرسال الطلب للتليجرام');
+            }
+            return response.json();
+        })
+        .then(data => {
+            alert('تم تسجيل طلبك بنجاح! 🎉 سنتواصل معك قريباً لتأكيد الشحن.');
+            if(checkoutModal) checkoutModal.style.display = 'none';
+            if(overlay) overlay.classList.remove('show');
+            checkoutForm.reset();
+            
+            // تصفير السلة بعد نجاح الإرسال
+            cart["المنتج الأول"] = 0; cart["المنتج الثاني"] = 0; cartCount = 0;
+            updateCartBadge();
+            purchaseSource = "طلب من سلة التسوق العامة";
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('عذراً، حدث خطأ أثناء إرسال الطلب. يرجى المحاولة مرة أخرى.');
+        });
+    });
                }
+             
                
     </script>
 </body>
