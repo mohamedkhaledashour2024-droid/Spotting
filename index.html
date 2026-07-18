@@ -665,14 +665,14 @@
         }
 
                              /* ============================================================ */
-/* 11. معالجة إرسال البيانات الفوري والآمن عبر التليجرام         */
+/* 11. معالجة إرسال البيانات الفوري والآمن عبر البريد الإلكتروني  */
 /* ============================================================ */
 if(checkoutForm) {
     checkoutForm.addEventListener('submit', (e) => {
         e.preventDefault();
         
-        const telegramToken = `8629050539:AAFwnhMYUsXIKAChbF_Fq2r1DiwDylYGLw0`;
-        const chatId = `7844801499`;
+        // ⚠️ استبدل الرابط أدناه بالرابط الذي حصلت عليه من موقع Formspree
+        const formspreeUrl = `https://formspree.io/f/xzdnrryv`;
        
         const name = document.getElementById('customerName') ? document.getElementById('customerName').value : 'غير معروف';
         const phone = document.getElementById('customerPhone') ? document.getElementById('customerPhone').value : 'غير معروف';
@@ -690,32 +690,29 @@ if(checkoutForm) {
             cartDetails = "شراء فوري مباشر بدون إضافة للسلة\n";
         }
         
-        // نص الرسالة النظيف بدون تنسيقات ماركداون لضمان الاستقرار والقبول الفوري
-        const messageText = `طلب شراء جديد من الموقع!\n\n` +
-                            `طريقة الطلب: ${purchaseSource}\n\n` +
-                            `محتويات الطلب:\n${cartDetails}\n` +
-                            `الاسم: ${name}\n` +
-                            `الهاتف: ${phone}\n` +
-                            `العنوان: ${address}\n` +
-                            `المحافظة: ${gov}\n\n` +
-                            `إجمالي القطع: ${cartCount}`;
+        // تجهيز البيانات لإرسالها كنموذج منظم للبريد الإلكتروني
+        const formData = {
+            "اسم العميل": name,
+            "رقم الهاتف": phone,
+            "العنوان التفصيلي": address,
+            "المحافظة": gov,
+            "تفاصيل المنتجات": cartDetails,
+            "إجمالي القطع": cartCount,
+            "مصدر الطلب": purchaseSource
+        };
 
-        const apiUrl = `https://telegram.org{telegramToken}/sendMessage`;
-       
-        fetch(apiUrl, {
+        // إرسال البيانات إلى Formspree لتصل إلى بريدك الإلكتروني
+        fetch(formspreeUrl, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
             },
-            body: JSON.stringify({
-                chat_id: chatId,
-                text: messageText
-                // تم إزالة parse_mode لمنع أخطاء السيرفر نهائياً
-            })
+            body: JSON.stringify(formData)
         })
         .then(response => {
             if (!response.ok) {
-                throw new Error('فشل سيرفر تليجرام في استقبال البيانات');
+                throw new Error('فشل إرسال الطلب إلى البريد الإلكتروني');
             }
             return response.json();
         })
@@ -735,10 +732,10 @@ if(checkoutForm) {
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('عذراً، حدث خطأ أثناء إرسال الطلب. يرجى التأكد من تفعيل البوت أولاً.');
+            alert('عذراً، حدث خطأ أثناء إرسال الطلب. يرجى المحاولة مرة أخرى.');
         });
     });
-}
+               }
                
                
     </script>
