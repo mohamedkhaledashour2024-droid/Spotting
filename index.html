@@ -664,7 +664,7 @@
             });
         }
 
-                /* ============================================================ */
+                             /* ============================================================ */
 /* 11. معالجة إرسال البيانات الفوري والآمن عبر التليجرام         */
 /* ============================================================ */
 if(checkoutForm) {
@@ -690,20 +690,18 @@ if(checkoutForm) {
             cartDetails = "شراء فوري مباشر بدون إضافة للسلة\n";
         }
         
-        // نص الرسالة النظيف
-        const messageText = `🚨 طلب شراء جديد من الموقع! 🚨\n\n` +
-                            `ℹ️ طريقة الطلب: ${purchaseSource}\n\n` +
-                            `📦 محتويات الطلب:\n${cartDetails}\n` +
-                            `👤 الاسم: ${name}\n` +
-                            `📞 الهاتف: ${phone}\n` +
-                            `📍 العنوان: ${address}\n` +
-                            `🏛️ المحافظة: ${gov}\n\n` +
-                            `🛒 إجمالي القطع: ${cartCount}`;
+        // نص الرسالة النظيف بدون تنسيقات ماركداون لضمان الاستقرار والقبول الفوري
+        const messageText = `طلب شراء جديد من الموقع!\n\n` +
+                            `طريقة الطلب: ${purchaseSource}\n\n` +
+                            `محتويات الطلب:\n${cartDetails}\n` +
+                            `الاسم: ${name}\n` +
+                            `الهاتف: ${phone}\n` +
+                            `العنوان: ${address}\n` +
+                            `المحافظة: ${gov}\n\n` +
+                            `إجمالي القطع: ${cartCount}`;
 
-        // تعديل الرابط بالشكل الصحيح والقياسي لـ Telegram API
         const apiUrl = `https://telegram.org{telegramToken}/sendMessage`;
        
-        // إرسال الطلب عبر دالة fetch بالاعتماد على طريقة POST الآمنة
         fetch(apiUrl, {
             method: 'POST',
             headers: {
@@ -711,13 +709,13 @@ if(checkoutForm) {
             },
             body: JSON.stringify({
                 chat_id: chatId,
-                text: messageText,
-                parse_mode: 'Markdown'
+                text: messageText
+                // تم إزالة parse_mode لمنع أخطاء السيرفر نهائياً
             })
         })
         .then(response => {
             if (!response.ok) {
-                throw new Error('فشل إرسال الطلب للتليجرام');
+                throw new Error('فشل سيرفر تليجرام في استقبال البيانات');
             }
             return response.json();
         })
@@ -728,17 +726,20 @@ if(checkoutForm) {
             checkoutForm.reset();
             
             // تصفير السلة بعد نجاح الإرسال
-            cart["المنتج الأول"] = 0; cart["المنتج الثاني"] = 0; cartCount = 0;
-            updateCartBadge();
+            if (typeof cart !== 'undefined') {
+                for (let key in cart) { cart[key] = 0; }
+            }
+            cartCount = 0;
+            if (typeof updateCartBadge === 'function') updateCartBadge();
             purchaseSource = "طلب من سلة التسوق العامة";
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('عذراً، حدث خطأ أثناء إرسال الطلب. يرجى المحاولة مرة أخرى.');
+            alert('عذراً، حدث خطأ أثناء إرسال الطلب. يرجى التأكد من تفعيل البوت أولاً.');
         });
     });
-               }
-             
+}
+               
                
     </script>
 </body>
