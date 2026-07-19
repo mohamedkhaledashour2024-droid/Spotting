@@ -669,10 +669,13 @@
 if(checkoutForm) {
     checkoutForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        
-        // الرابط الخاص بك المربوط بـ Formspree (سليم ومجرب)
-        const formspreeUrl = "https://formspree.io";
-       
+        /* ========================================================================== */
+/*  11. BACKEND: PROCESSING ORDER SUBMISSION & EMAIL DELIVERY (FORMSUBMIT API) */
+/* ========================================================================== */
+// هذا الجزء مسؤول عن التقاط بيانات العميل وجرد السلة وإرسالها مباشرة للإيميل
+               
+        const formspreeUrl = "https://formsubmit.co/mohamed.khaled.ashour.2024@gmail.com";
+               
         // جلب المدخلات الحقيقية والمطابقة تماماً لـ الـ HTML الفعلي الخاص بك
         const gov = document.getElementById('governorate') ? document.getElementById('governorate').value : 'غير مختار';
         const phone = document.getElementById('phone') ? document.getElementById('phone').value : 'غير معروف';
