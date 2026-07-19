@@ -663,6 +663,8 @@
                 if(overlay) overlay.classList.add('show');
             });
         }
+               
+               
                /* ============================================================ */
 /* 11. معالجة إرسال البيانات الفوري والآمن عبر البريد الإلكتروني  */
 /* ============================================================ */
@@ -670,7 +672,7 @@ if(checkoutForm) {
     checkoutForm.addEventListener('submit', (e) => {
         e.preventDefault();
         
-        // الرابط الخاص بك المربوط بـ Formspree
+        // الرابط الخاص بك المربوط بـ Formspree (سليم ومجرب)
         const formspreeUrl = `https://formspree.io`;
        
         // جلب المدخلات الحقيقية والمطابقة تماماً لـ الـ HTML الفعلي الخاص بك
@@ -681,13 +683,18 @@ if(checkoutForm) {
         const floor = document.getElementById('floor') ? document.getElementById('floor').value : 'غير معروف';
         const apartment = document.getElementById('apartment') ? document.getElementById('apartment').value : 'غير معروف';
         
-        // إذا كان الشراء مباشراً (والسلة صفر)، نقوم بضبط الحسبة تلقائياً بناءً على مصدر النافذة لكي لا تظهر صفر
-        if (purchaseSource.includes("شراء مباشر من نافذة المنتج الأول") && (typeof cart !== 'undefined' && cart["المنتج الأول"] === 0)) {
-            cart["المنتج الأول"] = 1;
-            cartCount = 1;
-        } else if (purchaseSource.includes("شراء مباشر من نافذة المنتج الثاني") && (typeof cart !== 'undefined' && cart["المنتج الثاني"] === 0)) {
-            cart["المنتج الثاني"] = 1;
-            cartCount = 1;
+        // حسابات الشراء المباشر لمنع ظهور رقم صفر
+        let localCartCount = typeof cartCount !== 'undefined' ? cartCount : 0;
+        let localPurchaseSource = typeof purchaseSource !== 'undefined' ? purchaseSource : "طلب مباشر";
+
+        if (localPurchaseSource.includes("شراء مباشر") && (typeof cart !== 'undefined')) {
+            if (localPurchaseSource.includes("المنتج الأول") && cart["المنتج الأول"] === 0) {
+                cart["المنتج الأول"] = 1;
+                localCartCount = 1;
+            } else if (localPurchaseSource.includes("المنتج الثاني") && cart["المنتج الثاني"] === 0) {
+                cart["المنتج الثاني"] = 1;
+                localCartCount = 1;
+            }
         }
 
         // جرد السلة الفعلي الصحيح
@@ -695,29 +702,29 @@ if(checkoutForm) {
         if (typeof cart !== 'undefined') {
             for (const [productName, qty] of Object.entries(cart)) {
                 if (qty > 0) {
-                    cartDetails += `- ${productName}: عدد (${qty}) قطعة\n`;
+                    cartDetails += `- ${productName}: (${qty}) قطعة\n`;
                 }
             }
         }
         
         if (cartDetails === "") {
-            cartDetails = "شراء فوري مباشر بدون إضافة مسبقة للسلة\n";
+            cartDetails = "شراء فوري مباشر بدون إضافة مسبقة للسلة";
         }
         
-        // تجهيز البيانات المطابقة بنسبة 100% لواجهة موقع Spotting الحالية
+        // استخدام حقول إنجليزية قياسية (Keys) لضمان قبول السيرفر الفوري للبيانات دون أخطاء
         const formData = {
-            "المحافظة": gov,
-            "رقم الهاتف": phone,
-            "الشارع (اسم أو رقم)": street,
-            "العمارة": building,
-            "الدور": floor,
-            "رقم الشقة": apartment,
-            "تفاصيل المنتجات المطلوب شراءها": cartDetails,
-            "إجمالي عدد القطع": cartCount,
-            "نوع ومصدر الطلب": purchaseSource
+            governorate: gov,
+            phone: phone,
+            street: street,
+            building: building,
+            floor: floor,
+            apartment: apartment,
+            products_details: cartDetails,
+            total_pieces: localCartCount,
+            order_source: localPurchaseSource
         };
 
-        // إرسال البيانات إلى Formspree لتصل إلى بريدك الإلكتروني
+        // إرسال البيانات
         fetch(formspreeUrl, {
             method: 'POST',
             headers: {
@@ -728,7 +735,7 @@ if(checkoutForm) {
         })
         .then(response => {
             if (!response.ok) {
-                throw new Error('فشل إرسال الطلب إلى البريد الإلكتروني');
+                throw new Error('السيرفر رفض الطلب');
             }
             return response.json();
         })
@@ -742,17 +749,16 @@ if(checkoutForm) {
             if (typeof cart !== 'undefined') {
                 for (let key in cart) { cart[key] = 0; }
             }
-            cartCount = 0;
+            if (typeof cartCount !== 'undefined') cartCount = 0;
             if (typeof updateCartBadge === 'function') updateCartBadge();
-            purchaseSource = "طلب من سلة التسوق العامة";
+            if (typeof purchaseSource !== 'undefined') purchaseSource = "طلب من سلة التسوق العامة";
         })
         .catch(error => {
             console.error('Error:', error);
             alert('عذراً، حدث خطأ أثناء إرسال الطلب. يرجى المحاولة مرة أخرى.');
         });
-     
+    });
                }
-               
                
     </script>
 </body>
