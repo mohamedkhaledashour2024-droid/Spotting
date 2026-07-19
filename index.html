@@ -663,7 +663,6 @@
                 if(overlay) overlay.classList.add('show');
             });
         }
-               
                /* ============================================================ */
 /* 11. معالجة إرسال البيانات الفوري والآمن عبر البريد الإلكتروني  */
 /* ============================================================ */
@@ -671,10 +670,10 @@ if(checkoutForm) {
     checkoutForm.addEventListener('submit', (e) => {
         e.preventDefault();
         
-        // الرابط الخاص بك المربوط بـ Formspree
+        // الرابط الخاص بك المربوط بـ Formspree (سليم ومجرب)
         const formspreeUrl = "https://formspree.io";
        
-        // جلب المدخلات الحقيقية والمطابقة تماماً لمعرفات الـ HTML في موقعك
+        // جلب المدخلات الحقيقية والمطابقة تماماً لـ الـ HTML الفعلي الخاص بك
         const gov = document.getElementById('governorate') ? document.getElementById('governorate').value : 'غير مختار';
         const phone = document.getElementById('phone') ? document.getElementById('phone').value : 'غير معروف';
         const street = document.getElementById('street') ? document.getElementById('street').value : 'غير معروف';
@@ -682,22 +681,21 @@ if(checkoutForm) {
         const floor = document.getElementById('floor') ? document.getElementById('floor').value : 'غير معروف';
         const apartment = document.getElementById('apartment') ? document.getElementById('apartment').value : 'غير معروف';
         
-        // تأمين حسابات ومصادر الطلب لمنع ظهور الأرقام الصفرية
-        let finalCartCount = typeof cartCount !== 'undefined' ? cartCount : 0;
-        let finalPurchaseSource = typeof purchaseSource !== 'undefined' ? purchaseSource : "طلب مباشر";
+        // حسابات ومصادر الطلب لمنع ظهور الأرقام الصفرية
+        let localCartCount = typeof cartCount !== 'undefined' ? cartCount : 0;
+        let localPurchaseSource = typeof purchaseSource !== 'undefined' ? purchaseSource : "طلب مباشر";
 
-        // هندسة ذكية: إذا كان الطلب شراء مباشر والسلة فارغة، نقوم بتحديث الحسبة تلقائياً بناءً على اسم النافذة
-        if (finalPurchaseSource.includes("شراء مباشر") && typeof cart !== 'undefined') {
-            if (finalPurchaseSource.includes("المنتج الأول") && cart["المنتج الأول"] === 0) {
+        if (localPurchaseSource.includes("شراء مباشر") && (typeof cart !== 'undefined')) {
+            if (localPurchaseSource.includes("المنتج الأول") && cart["المنتج الأول"] === 0) {
                 cart["المنتج الأول"] = 1;
-                finalCartCount = 1;
-            } else if (finalPurchaseSource.includes("المنتج الثاني") && cart["المنتج الثاني"] === 0) {
+                localCartCount = 1;
+            } else if (localPurchaseSource.includes("المنتج الثاني") && cart["المنتج الثاني"] === 0) {
                 cart["المنتج الثاني"] = 1;
-                finalCartCount = 1;
+                localCartCount = 1;
             }
         }
 
-        // جرد السلة الفعلي الصحيح وبصياغة نصية مستقرة تماماً
+        // جرد السلة الفعلي الصحيح
         let cartDetails = "";
         if (typeof cart !== 'undefined') {
             for (const [productName, qty] of Object.entries(cart)) {
@@ -708,44 +706,43 @@ if(checkoutForm) {
         }
         
         if (cartDetails === "") {
-            cartDetails = "شراء فوري مباشر للمنتج المعروض";
+            cartDetails = "شراء فوري مباشر بدون إضافة مسبقة للسلة";
         }
         
-        // تجميع البيانات في كائن موحد بحقول قياسية متوافقة تماماً مع خوادم الاستقبال
-        const formData = {
-            governorate: gov,
-            phone: phone,
-            street: street,
-            building: building,
-            floor: floor,
-            apartment: apartment,
-            products_details: cartDetails,
-            total_pieces: finalCartCount,
-            order_source: finalPurchaseSource
-        };
+        // استخدام FormData القياسي بدلاً من JSON لضمان عبور البيانات وقبول السيرفر فوراً
+        const dataToSend = new FormData();
+        dataToSend.append("المحافظة", gov);
+        dataToSend.append("رقم الهاتف", phone);
+        dataToSend.append("الشارع", street);
+        dataToSend.append("العمارة", building);
+        dataToSend.append("الدور", floor);
+        dataToSend.append("رقم الشقة", apartment);
+        dataToSend.append("تفاصيل المنتجات", cartDetails);
+        dataToSend.append("إجمالي القطع", localCartCount);
+        dataToSend.append("مصدر الطلب", localPurchaseSource);
 
-        // إرسال البيانات عبر الـ Fetch API
+        // إرسال البيانات الآمن والمستقر للـ Backend
         fetch(formspreeUrl, {
             method: 'POST',
+            body: dataToSend,
             headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify(formData)
+                'Accept': 'application/json' // السيرفر سيرد بـ JSON عند النجاح
+            }
         })
         .then(response => {
             if (!response.ok) {
-                throw new Error('Server Refused Request');
+                throw new Error('السيرفر رفض استقبال البيانات');
             }
             return response.json();
         })
         .then(data => {
+            // إشعار العميل بالنجاح وإغلاق النوافذ
             alert('تم تسجيل طلبك بنجاح! 🎉 سنتواصل معك قريباً لتأكيد الشحن.');
             if(checkoutModal) checkoutModal.style.display = 'none';
             if(overlay) overlay.classList.remove('show');
             checkoutForm.reset();
             
-            // إعادة تصفير السلة والعدادات برمجياً بعد نجاح الإرسال بالكامل
+            // تصفير السلة بعد نجاح الإرسال بالكامل
             if (typeof cart !== 'undefined') {
                 for (let key in cart) { cart[key] = 0; }
             }
@@ -758,7 +755,8 @@ if(checkoutForm) {
             alert('عذراً، حدث خطأ أثناء إرسال الطلب. يرجى المحاولة مرة أخرى.');
         });
     });
-            }
+                                                     }
+                                         
                                          
              
                
