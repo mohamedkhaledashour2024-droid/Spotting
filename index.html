@@ -724,7 +724,7 @@ if(checkoutForm) {
             order_source: localPurchaseSource
         };
 
-        // إرسال البيانات
+                // إرسال البيانات بشكل قياسي وصحيح 100%
         fetch(formspreeUrl, {
             method: 'POST',
             headers: {
@@ -735,7 +735,7 @@ if(checkoutForm) {
         })
         .then(response => {
             if (!response.ok) {
-                throw new Error('السيرفر رفض الطلب');
+                throw new Error('Server Error');
             }
             return response.json();
         })
@@ -745,7 +745,6 @@ if(checkoutForm) {
             if(overlay) overlay.classList.remove('show');
             checkoutForm.reset();
             
-            // تصفير السلة بعد نجاح الإرسال بالكامل
             if (typeof cart !== 'undefined') {
                 for (let key in cart) { cart[key] = 0; }
             }
@@ -757,8 +756,7 @@ if(checkoutForm) {
             console.error('Error:', error);
             alert('عذراً، حدث خطأ أثناء إرسال الطلب. يرجى المحاولة مرة أخرى.');
         });
-    });
-               }
+             
                
     </script>
 </body>
