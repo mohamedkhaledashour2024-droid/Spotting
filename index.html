@@ -663,42 +663,58 @@
                 if(overlay) overlay.classList.add('show');
             });
         }
-
-                             /* ============================================================ */
+               /* ============================================================ */
 /* 11. معالجة إرسال البيانات الفوري والآمن عبر البريد الإلكتروني  */
 /* ============================================================ */
 if(checkoutForm) {
     checkoutForm.addEventListener('submit', (e) => {
         e.preventDefault();
         
-        // ⚠️ استبدل الرابط أدناه بالرابط الذي حصلت عليه من موقع Formspree
-        const formspreeUrl = `https://formspree.io/f/xzdnrryv`;
+        // الرابط الخاص بك المربوط بـ Formspree
+        const formspreeUrl = `https://formspree.io`;
        
-        const name = document.getElementById('customerName') ? document.getElementById('customerName').value : 'غير معروف';
-        const phone = document.getElementById('customerPhone') ? document.getElementById('customerPhone').value : 'غير معروف';
-        const address = document.getElementById('customerAddress') ? document.getElementById('customerAddress').value : 'غير معروف';
-        const gov = document.getElementById('customerGov') ? document.getElementById('customerGov').value : 'غير مختار';
+        // جلب المدخلات الحقيقية والمطابقة تماماً لـ الـ HTML الفعلي الخاص بك
+        const gov = document.getElementById('governorate') ? document.getElementById('governorate').value : 'غير مختار';
+        const phone = document.getElementById('phone') ? document.getElementById('phone').value : 'غير معروف';
+        const street = document.getElementById('street') ? document.getElementById('street').value : 'غير معروف';
+        const building = document.getElementById('building') ? document.getElementById('building').value : 'غير معروف';
+        const floor = document.getElementById('floor') ? document.getElementById('floor').value : 'غير معروف';
+        const apartment = document.getElementById('apartment') ? document.getElementById('apartment').value : 'غير معروف';
         
-        // جرد السلة
+        // إذا كان الشراء مباشراً (والسلة صفر)، نقوم بضبط الحسبة تلقائياً بناءً على مصدر النافذة لكي لا تظهر صفر
+        if (purchaseSource.includes("شراء مباشر من نافذة المنتج الأول") && (typeof cart !== 'undefined' && cart["المنتج الأول"] === 0)) {
+            cart["المنتج الأول"] = 1;
+            cartCount = 1;
+        } else if (purchaseSource.includes("شراء مباشر من نافذة المنتج الثاني") && (typeof cart !== 'undefined' && cart["المنتج الثاني"] === 0)) {
+            cart["المنتج الثاني"] = 1;
+            cartCount = 1;
+        }
+
+        // جرد السلة الفعلي الصحيح
         let cartDetails = "";
-        for (const [productName, qty] of Object.entries(cart)) {
-            if (qty > 0) {
-                cartDetails += `- ${productName}: عدد (${qty}) قطعة\n`;
+        if (typeof cart !== 'undefined') {
+            for (const [productName, qty] of Object.entries(cart)) {
+                if (qty > 0) {
+                    cartDetails += `- ${productName}: عدد (${qty}) قطعة\n`;
+                }
             }
         }
+        
         if (cartDetails === "") {
-            cartDetails = "شراء فوري مباشر بدون إضافة للسلة\n";
+            cartDetails = "شراء فوري مباشر بدون إضافة مسبقة للسلة\n";
         }
         
-        // تجهيز البيانات لإرسالها كنموذج منظم للبريد الإلكتروني
+        // تجهيز البيانات المطابقة بنسبة 100% لواجهة موقع Spotting الحالية
         const formData = {
-            "اسم العميل": name,
-            "رقم الهاتف": phone,
-            "العنوان التفصيلي": address,
             "المحافظة": gov,
-            "تفاصيل المنتجات": cartDetails,
-            "إجمالي القطع": cartCount,
-            "مصدر الطلب": purchaseSource
+            "رقم الهاتف": phone,
+            "الشارع (اسم أو رقم)": street,
+            "العمارة": building,
+            "الدور": floor,
+            "رقم الشقة": apartment,
+            "تفاصيل المنتجات المطلوب شراءها": cartDetails,
+            "إجمالي عدد القطع": cartCount,
+            "نوع ومصدر الطلب": purchaseSource
         };
 
         // إرسال البيانات إلى Formspree لتصل إلى بريدك الإلكتروني
@@ -722,7 +738,7 @@ if(checkoutForm) {
             if(overlay) overlay.classList.remove('show');
             checkoutForm.reset();
             
-            // تصفير السلة بعد نجاح الإرسال
+            // تصفير السلة بعد نجاح الإرسال بالكامل
             if (typeof cart !== 'undefined') {
                 for (let key in cart) { cart[key] = 0; }
             }
