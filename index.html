@@ -663,78 +663,68 @@
                 if(overlay) overlay.classList.add('show');
             });
         }
-               /* ============================================================ */
-/* 11. معالجة إرسال البيانات الفوري والآمن عبر البريد الإلكتروني  */
-/* ============================================================ */
+             /* ========================================================================== */
+/*  11. BACKEND: PROCESSING ORDER SUBMISSION & EMAIL DELIVERY (FORMSUBMIT API) */
+/* ========================================================================== */
 if(checkoutForm) {
     checkoutForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        /* ========================================================================== */
-/*  11. BACKEND: PROCESSING ORDER SUBMISSION & EMAIL DELIVERY (FORMSUBMIT API) */
-/* ========================================================================== */
-// هذا الجزء مسؤول عن التقاط بيانات العميل وجرد السلة وإرسالها مباشرة للإيميل
-               
-        const formspreeUrl = "https://formsubmit.co/mohamed.khaled.ashour.2024@gmail.com";
-               
-        // جلب المدخلات الحقيقية والمطابقة تماماً لـ الـ HTML الفعلي الخاص بك
-        const gov = document.getElementById('governorate') ? document.getElementById('governorate').value : 'غير مختار';
-        const phone = document.getElementById('phone') ? document.getElementById('phone').value : 'غير معروف';
-        const street = document.getElementById('street') ? document.getElementById('street').value : 'غير معروف';
-        const building = document.getElementById('building') ? document.getElementById('building').value : 'غير معروف';
-        const floor = document.getElementById('floor') ? document.getElementById('floor').value : 'غير معروف';
-        const apartment = document.getElementById('apartment') ? document.getElementById('apartment').value : 'غير معروف';
         
-        // حسابات ومصادر الطلب لمنع ظهور الأرقام الصفرية
-        let localCartCount = typeof cartCount !== 'undefined' ? cartCount : 0;
-        let localPurchaseSource = typeof purchaseSource !== 'undefined' ? purchaseSource : "طلب مباشر";
-
-        if (localPurchaseSource.includes("شراء مباشر") && (typeof cart !== 'undefined')) {
-            if (localPurchaseSource.includes("المنتج الأول") && cart["المنتج الأول"] === 0) {
-                cart["المنتج الأول"] = 1;
-                localCartCount = 1;
-            } else if (localPurchaseSource.includes("المنتج الثاني") && cart["المنتج الثاني"] === 0) {
-                cart["المنتج الثاني"] = 1;
-                localCartCount = 1;
-            }
-        }
-
-        // جرد السلة الفعلي الصحيح
+        // رابط البريد الإلكتروني المباشر الخاص بك والمصحح يدوياً
+        const formspreeUrl = "https://formsubmit.co";
+       
+        // جلب المدخلات الفعلية من الـ HTML مع تأمينها ضد الانهيار
+        const gov = document.getElementById('governorate') ? document.getElementById('governorate').value : 'none';
+        const phone = document.getElementById('phone') ? document.getElementById('phone').value : 'none';
+        const street = document.getElementById('street') ? document.getElementById('street').value : 'none';
+        const building = document.getElementById('building') ? document.getElementById('building').value : 'none';
+        const floor = document.getElementById('floor') ? document.getElementById('floor').value : 'none';
+        const apartment = document.getElementById('apartment') ? document.getElementById('apartment').value : 'none';
+        
+        // جلب المتغيرات العامة بأمان ودون الدخول في شروط نصية معقدة تسبب العطل
+        let finalCount = typeof cartCount !== 'undefined' ? cartCount : 1;
+        let finalSource = typeof purchaseSource !== 'undefined' ? purchaseSource : "طلب من الموقع";
+        
+        // جرد بسيط للسلة لمنع أخطاء الترميز الحرفي
         let cartDetails = "";
         if (typeof cart !== 'undefined') {
             for (const [productName, qty] of Object.entries(cart)) {
                 if (qty > 0) {
-                    cartDetails += `- ${productName}: (${qty}) قطعة\n`;
+                    cartDetails += productName + " (" + qty + ") | ";
                 }
             }
         }
         
         if (cartDetails === "") {
-            cartDetails = "شراء فوري مباشر بدون إضافة مسبقة للسلة";
+            cartDetails = "شراء فوري مباشر - " + finalSource;
+            if(finalCount === 0) finalCount = 1; // تأمين العدد ليصبح قطعة واحدة على الأقل في الشراء المباشر
         }
         
-        // استخدام FormData القياسي بدلاً من JSON لضمان عبور البيانات وقبول السيرفر فوراً
-        const dataToSend = new FormData();
-        dataToSend.append("المحافظة", gov);
-        dataToSend.append("رقم الهاتف", phone);
-        dataToSend.append("الشارع", street);
-        dataToSend.append("العمارة", building);
-        dataToSend.append("الدور", floor);
-        dataToSend.append("رقم الشقة", apartment);
-        dataToSend.append("تفاصيل المنتجات", cartDetails);
-        dataToSend.append("إجمالي القطع", localCartCount);
-        dataToSend.append("مصدر الطلب", localPurchaseSource);
+        // تجهيز كائن البيانات بحقول إنجليزية قياسية آمنة تماماً للمتصفحات والسيرفرات
+        const formData = {
+            governorate: gov,
+            phone: phone,
+            street: street,
+            building: building,
+            floor: floor,
+            apartment: apartment,
+            products: cartDetails,
+            total_items: finalCount,
+            source: finalSource
+        };
 
         // إرسال البيانات الآمن والمستقر للـ Backend
         fetch(formspreeUrl, {
             method: 'POST',
-            body: dataToSend,
             headers: {
-                'Accept': 'application/json' // السيرفر سيرد بـ JSON عند النجاح
-            }
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(formData)
         })
         .then(response => {
             if (!response.ok) {
-                throw new Error('السيرفر رفض استقبال البيانات');
+                throw new Error('Network response was not ok');
             }
             return response.json();
         })
@@ -745,7 +735,7 @@ if(checkoutForm) {
             if(overlay) overlay.classList.remove('show');
             checkoutForm.reset();
             
-            // تصفير السلة بعد نجاح الإرسال بالكامل
+            // تصفير العدادات بأمان بعد النجاح
             if (typeof cart !== 'undefined') {
                 for (let key in cart) { cart[key] = 0; }
             }
@@ -754,14 +744,11 @@ if(checkoutForm) {
             if (typeof purchaseSource !== 'undefined') purchaseSource = "طلب من سلة التسوق العامة";
         })
         .catch(error => {
-            console.error('Error Details:', error);
+            console.error('Backend Error:', error);
             alert('عذراً، حدث خطأ أثناء إرسال الطلب. يرجى المحاولة مرة أخرى.');
         });
     });
 }
-                                         
-                                         
-             
                
     </script>
 </body>
