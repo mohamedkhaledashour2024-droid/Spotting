@@ -663,17 +663,18 @@
                 if(overlay) overlay.classList.add('show');
             });
         }
-             /* ========================================================================== */
+             
+               /* ========================================================================== */
 /*  11. BACKEND: PROCESSING ORDER SUBMISSION & EMAIL DELIVERY (FORMSUBMIT API) */
 /* ========================================================================== */
 if(checkoutForm) {
     checkoutForm.addEventListener('submit', (e) => {
         e.preventDefault();
         
-        // رابط البريد الإلكتروني المباشر الخاص بك والمصحح يدوياً
+        // رابط استقبال البيانات المباشر المربوط ببريدك الإلكتروني
         const formspreeUrl = "https://formsubmit.co";
        
-        // جلب المدخلات الفعلية من الـ HTML مع تأمينها ضد الانهيار
+        // جلب مدخلات الـ HTML الحالية والمطابقة تماماً لمعرفات موقعك
         const gov = document.getElementById('governorate') ? document.getElementById('governorate').value : 'none';
         const phone = document.getElementById('phone') ? document.getElementById('phone').value : 'none';
         const street = document.getElementById('street') ? document.getElementById('street').value : 'none';
@@ -681,11 +682,10 @@ if(checkoutForm) {
         const floor = document.getElementById('floor') ? document.getElementById('floor').value : 'none';
         const apartment = document.getElementById('apartment') ? document.getElementById('apartment').value : 'none';
         
-        // جلب المتغيرات العامة بأمان ودون الدخول في شروط نصية معقدة تسبب العطل
         let finalCount = typeof cartCount !== 'undefined' ? cartCount : 1;
-        let finalSource = typeof purchaseSource !== 'undefined' ? purchaseSource : "طلب من الموقع";
+        let finalSource = typeof purchaseSource !== 'undefined' ? purchaseSource : "طلب مباشر";
         
-        // جرد بسيط للسلة لمنع أخطاء الترميز الحرفي
+        // جرد السلة الفعلي
         let cartDetails = "";
         if (typeof cart !== 'undefined') {
             for (const [productName, qty] of Object.entries(cart)) {
@@ -697,30 +697,29 @@ if(checkoutForm) {
         
         if (cartDetails === "") {
             cartDetails = "شراء فوري مباشر - " + finalSource;
-            if(finalCount === 0) finalCount = 1; // تأمين العدد ليصبح قطعة واحدة على الأقل في الشراء المباشر
+            if(finalCount === 0) finalCount = 1;
         }
         
-        // تجهيز كائن البيانات بحقول إنجليزية قياسية آمنة تماماً للمتصفحات والسيرفرات
-        const formData = {
-            governorate: gov,
-            phone: phone,
-            street: street,
-            building: building,
-            floor: floor,
-            apartment: apartment,
-            products: cartDetails,
-            total_items: finalCount,
-            source: finalSource
-        };
+        // تحويل البيانات إلى تنسيق URL-Encoded المتوافق 100% مع معايير CORS والسيرفرات
+        const searchParams = new URLSearchParams();
+        searchParams.append("Governorate", gov);
+        searchParams.append("Phone", phone);
+        searchParams.append("Street", street);
+        searchParams.append("Building", building);
+        searchParams.append("Floor", floor);
+        searchParams.append("Apartment", apartment);
+        searchParams.append("Products", cartDetails);
+        searchParams.append("Total Items", finalCount);
+        searchParams.append("Source", finalSource);
 
-        // إرسال البيانات الآمن والمستقر للـ Backend
+        // تنفيذ عملية الإرسال الآمنة
         fetch(formspreeUrl, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded',
                 'Accept': 'application/json'
             },
-            body: JSON.stringify(formData)
+            body: searchParams.toString()
         })
         .then(response => {
             if (!response.ok) {
@@ -729,13 +728,13 @@ if(checkoutForm) {
             return response.json();
         })
         .then(data => {
-            // إشعار العميل بالنجاح وإغلاق النوافذ
+            // إشعار العميل بنجاح العملية بالكامل
             alert('تم تسجيل طلبك بنجاح! 🎉 سنتواصل معك قريباً لتأكيد الشحن.');
             if(checkoutModal) checkoutModal.style.display = 'none';
             if(overlay) overlay.classList.remove('show');
             checkoutForm.reset();
             
-            // تصفير العدادات بأمان بعد النجاح
+            // إعادة تصفير العدادات برمجياً بعد نجاح الإرسال
             if (typeof cart !== 'undefined') {
                 for (let key in cart) { cart[key] = 0; }
             }
@@ -744,11 +743,11 @@ if(checkoutForm) {
             if (typeof purchaseSource !== 'undefined') purchaseSource = "طلب من سلة التسوق العامة";
         })
         .catch(error => {
-            console.error('Backend Error:', error);
+            console.error('Backend Operational Error:', error);
             alert('عذراً، حدث خطأ أثناء إرسال الطلب. يرجى المحاولة مرة أخرى.');
         });
     });
-}
+                  }
                
     </script>
 </body>
